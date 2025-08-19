@@ -1500,7 +1500,8 @@ import classes.StatusEffects.VampireThirstEffect;
 		public static const LockingCurse:StatusEffectType          = mkCombat("Locking Curse");
 		public static const Terrorize:StatusEffectType             = mkCombat("Terrorize");
 		public static const WerespiderAbilities:StatusEffectType   = mkCombat("WerespiderAbilities");
-		
+		public static const SlimeSurround:StatusEffectType   = mkCombat("SlimeSurround");
+
 		// enchanted item stuff
 		
 		/** v1: hours till next TF, v2: race id, v3: no. of equipped items of that race */
@@ -1521,4 +1522,5 @@ import classes.StatusEffects.VampireThirstEffect;
 			return new StatusEffectType(id,CombatStatusEffect,1);
 		}
 	}
+
 }

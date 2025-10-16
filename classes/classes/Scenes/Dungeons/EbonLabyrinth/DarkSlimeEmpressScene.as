@@ -8,6 +8,8 @@ import classes.GlobalFlags.kFLAGS;
 import classes.Races;
 import classes.PerkLib;
 import classes.CoC;
+import classes.BodyParts.Gills;
+import classes.BodyParts.Tail;
 
 public class DarkSlimeEmpressScene extends BaseContent {
     public function DarkSlimeEmpressScene() {}
@@ -109,7 +111,7 @@ public class DarkSlimeEmpressScene extends BaseContent {
 		"\nSomething changed, you now look like the empress you previously absorbed." +
 		"\nAfter examining your body, you deside to leave. \n\n" );
 		outputText("You exit the room and return to the corridor you were previously in.\n\n");
-		player.slimeFeed();
+		player.slimeFeed(5);
 		
         CoC.instance.transformations.HairGoo.applyEffect(false);
         CoC.instance.transformations.ArmsGoo.applyEffect(false);
@@ -124,9 +126,11 @@ public class DarkSlimeEmpressScene extends BaseContent {
         CoC.instance.transformations.AntennaeNone.applyEffect(false);
         CoC.instance.transformations.HornsNone.applyEffect(false);
         CoC.instance.transformations.WingsNone.applyEffect(false);
-		player.createPerk(PerkLib.TransformationImmunity2, 11, 0, 0, 0);
+		player.createPerk(PerkLib.TransformationImmunity2, 12, 0, 0, 0);
 		player.createPerk(PerkLib.DarkSlimeEmpressCore, 0, 0, 0, 0);
 		CoC.instance.mainViewManager.updateCharviewIfNeeded();
+		player.tail.type = Tail.NONE;
+		player.gills.type = Gills.NONE;
 		player.updateRacialParagon(Races.DARKSLIME);
 		
 		outputText("\n\n<b>Gained New Perk: Sovereign's Dark Slime Core - Increased control over external slime.</b>");

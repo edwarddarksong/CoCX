@@ -1860,7 +1860,7 @@ public class PlayerEvents extends BaseContent implements TimeAwareInterface {
 			if (player.hasPerk(PerkLib.SlimeCore)) { //Lose slime core perk
 				if (player.rearBody.type != RearBody.METAMORPHIC_GOO || player.arms.type != Arms.GOO || !LowerBody.isGoo(player)) {
 					outputText("\nYour form ripples, as if uncertain at the changes your body is undergoing.  The goo of your flesh cools, its sensitive, responsive membrane thickening into [skin] while bones and muscles knit themselves into a cohesive torso, chest and hips gaining definition.  Translucent ooze clouds and the gushing puddle at your feet melts together, splitting into solid trunks as you regain your legs.  Before long, you can no longer see through your own body and, with an unsteady shiver, you pat yourself down, readjusting to solidity.  A lurching heat in your chest suddenly reminds you of the slime core that used to float inside you.  Gingerly touching your " + CoC.instance.player.chestDesc() + ", you can feel a small, second heartbeat under your ribs that gradually seems to be sinking, past your belly. A lurching wave of warmth sparks through you, knocking you off your fresh legs and onto your " + Appearance.buttDescription(player) + ".  A delicious pressure pulses in your abdomen and you loosen your [armor] as sweat beads down your neck.  You clench your eyes, tongue lolling in your mouth, and the pressure builds and builds until, in ecstatic release, your body arches in an orgasmic release.\n\n");
-					outputText("\nPanting, you open your eyes and see that, for once, the source of your climax wasn't your loins.  Feeling a warm, wetness on your abs, you investigate and find the small, heart-shaped nucleus that used to be inside your body has somehow managed to pass through your belly button. Exposed to the open air, the crimson organ slowly crystallizes, shrinking and hardening into a tiny ruby.  Rubbing the stone with your thumb, you're surprised to find that you can still feel a pulse within its glittering facets.  You stow the ruby heart, in case you need it again.\n");
+					outputText("\nPanting, you open your eyes and see that, for once, the source of your climax wasn't your loins.  Feeling a warm, wetness on your abs, you investigate and find the small, heart-shaped nucleus that used to be inside your body has somehow managed to pass through your belly button. Exposed to the open air, the crimson organ slowly crystallizes, shrinking and hardening into a tiny ruby.  Rubbing the stone with your thumb, you're surprised to find that you can still feel a pulse within its glittering facets.  You stow the <b>Ruby Heart</b>, in case you need it again.\n");
 					player.createKeyItem("Ruby Heart", 0, 0, 0, 0); //[Add 'Ruby Heart' to key items. Player regains slime core if returning to goo body]
 					player.removePerk(PerkLib.SlimeCore);
 					needNext = true;
@@ -1889,12 +1889,35 @@ public class PlayerEvents extends BaseContent implements TimeAwareInterface {
 			if (player.hasPerk(PerkLib.DarkSlimeCore)) { //Lose DARK slime core perk
 				if (player.rearBody.type != RearBody.METAMORPHIC_GOO || player.arms.type != Arms.GOO || !LowerBody.isGoo(player)) {
 					outputText("\nYour form ripples, as if uncertain at the changes your body is undergoing.  The goo of your flesh cools, its sensitive, responsive membrane thickening into [skin] while bones and muscles knit themselves into a cohesive torso, chest and hips gaining definition.  Translucent ooze clouds and the gushing puddle at your feet melts together, splitting into solid trunks as you regain your legs.  Before long, you can no longer see through your own body and, with an unsteady shiver, you pat yourself down, readjusting to solidity.  A lurching heat in your chest suddenly reminds you of the slime core that used to float inside you.  Gingerly touching your " + CoC.instance.player.chestDesc() + ", you can feel a small, second heartbeat under your ribs that gradually seems to be sinking, past your belly. A lurching wave of warmth sparks through you, knocking you off your fresh legs and onto your " + Appearance.buttDescription(player) + ".  A delicious pressure pulses in your abdomen and you loosen your [armor] as sweat beads down your neck.  You clench your eyes, tongue lolling in your mouth, and the pressure builds and builds until, in ecstatic release, your body arches in an orgasmic release.\n\n");
-					outputText("\nPanting, you open your eyes and see that, for once, the source of your climax wasn't your loins.  Feeling a warm, wetness on your abs, you investigate and find the small, heart-shaped nucleus that used to be inside your body has somehow managed to pass through your belly button. Exposed to the open air, the crimson organ slowly crystallizes, shrinking and hardening into a tiny ruby.  Rubbing the stone with your thumb, you're surprised to find that you can still feel a pulse within its glittering facets.  You stow the ruby heart, in case you need it again.\n");
+					outputText("\nPanting, you open your eyes and see that, for once, the source of your climax wasn't your loins.  Feeling a warm, wetness on your abs, you investigate and find the small, heart-shaped nucleus that used to be inside your body has somehow managed to pass through your belly button. Exposed to the open air, the crimson organ slowly crystallizes, shrinking and hardening into a tiny ruby.  Rubbing the stone with your thumb, you're surprised to find that you can still feel a pulse within its glittering facets.  You stow the <b>Ruby Orb</b>, in case you need it again.\n");
 					player.createKeyItem("Ruby Orb", 0, 0, 0, 0); //[Add 'Ruby Heart' to key items. Player regains slime core if returning to goo body]
 					player.removePerk(PerkLib.DarkSlimeCore);
 					needNext = true;
 				}
 			}
+			if (player.hasPerk(PerkLib.MagmaSlimeCore)) { //Lose MAGMA slime core perk
+				if (player.rearBody.type != RearBody.METAMORPHIC_GOO || player.arms.type != Arms.GOO || !LowerBody.isGoo(player)) {
+					outputText("\nYour form ripples, as if uncertain at the changes your body is undergoing.  The goo of your flesh cools, its sensitive, responsive membrane thickening into [skin] while bones and muscles knit themselves into a cohesive torso, chest and hips gaining definition.  Translucent ooze clouds and the gushing puddle at your feet melts together, splitting into solid trunks as you regain your legs.  Before long, you can no longer see through your own body and, with an unsteady shiver, you pat yourself down, readjusting to solidity.  A lurching heat in your chest suddenly reminds you of the slime core that used to float inside you.  Gingerly touching your " + CoC.instance.player.chestDesc() + ", you can feel a small, second heartbeat under your ribs that gradually seems to be sinking, past your belly. A lurching wave of warmth sparks through you, knocking you off your fresh legs and onto your " + Appearance.buttDescription(player) + ".  A delicious pressure pulses in your abdomen and you loosen your [armor] as sweat beads down your neck.  You clench your eyes, tongue lolling in your mouth, and the pressure builds and builds until, in ecstatic release, your body arches in an orgasmic release.\n\n");
+					outputText("\nPanting, you open your eyes and see that, for once, the source of your climax wasn't your loins.  Feeling a warm, wetness on your abs, you investigate and find the small, heart-shaped nucleus that used to be inside your body has somehow managed to pass through your belly button. Exposed to the open air, the crimson organ slowly crystallizes, shrinking and hardening into a tiny ruby.  Rubbing the stone with your thumb, you're surprised to find that you can still feel a pulse within its glittering facets.  You stow the <b>Ruby Chunk</b>, in case you need it again.\n");
+					player.createKeyItem("Ruby Chunk", 0, 0, 0, 0);
+					player.removePerk(PerkLib.MagmaSlimeCore);
+					needNext = true;
+				}
+			}
+
+			if (player.hasKeyItem("Ruby Chunk") >= 0) { //Regain MAGMA slime core
+				if (player.hasStatusEffect(StatusEffects.SlimeCraving) && !player.hasPerk(PerkLib.DarkSlimeCore) && player.isGoo() && player.rearBody.type == RearBody.METAMORPHIC_GOO && player.arms.type == Arms.GOO && LowerBody.isGoo(player)) {
+					outputText("\nAs you adjust to your new, goo-like body, you remember the ruby heart you expelled so long ago.  As you reach to pick it up, it quivers and pulses with a warm, cheerful light.  Your fingers close on it and the nucleus slides through your palm, into your body!\n\n");
+					outputText("There is a momentary pressure in your chest and a few memories that are not your own flicker before your eyes.  The dizzying sight passes and the slime core settles within your body, imprinted with your personality and experiences.  There is a comforting calmness from your new nucleus and you feel as though, with your new memories, you will be better able to manage your body's fluid requirements.\n");
+					//(Reduces Fluid Addiction to a 24 hour intake requirement).
+					outputText("(<b>Gained New Perk: Magma Slime Core - Moisture craving builds at a greatly reduced rate.</b>\n)");
+					player.createPerk(PerkLib.MagmaSlimeCore, 0, 0, 0, 0);
+					player.removeKeyItem("Ruby Chunk");
+					needNext = true;
+				}
+			}
+
+
 			if (player.hasPerk(PerkLib.RoyalSlimeJelly) && !player.isSlime()) { //Lose crown perk
 				outputText("\nYou feel.. less royal.");
 				outputText("\n(<b>Lost Perk: Royal Jelly</b>)")
@@ -1914,7 +1937,7 @@ public class PlayerEvents extends BaseContent implements TimeAwareInterface {
 				}
 			}
 			
-			if (player.hasKeyItem("Slimy Crown") >= 0 && !player.hasPerk(PerkLib.DarkSlimeCore)) { //Gain DARK slime core from crown
+			if (player.hasKeyItem("Slimy Crown") >= 0 && player.isRace(Races.DARKSLIME,1,false) && !player.hasPerk(PerkLib.DarkSlimeCore)) { //Gain DARK slime core from crown
 				if (player.hasStatusEffect(StatusEffects.SlimeCraving) && player.isGoo() && player.rearBody.type == RearBody.METAMORPHIC_GOO && player.arms.type == Arms.GOO && LowerBody.isGoo(player)) {
 					outputText("\nYou feel something grow within your gooey mass. \nA crystal like gem seems to have formed within you.\n\n");
 					//(Reduces Fluid Addiction to a 24 hour intake requirement).
@@ -1923,7 +1946,13 @@ public class PlayerEvents extends BaseContent implements TimeAwareInterface {
 					needNext = true;
 				}
 			}
-			
+
+			if (player.hasStatusEffect(StatusEffects.SlimeAbilities) && !player.isSlime()){
+				player.removeStatusEffect(StatusEffects.SlimeAbilities);
+				player.buff("SlimeAbility-Fluid Euphoria").remove();
+				outputText("\n\n<b>You lose the abilities that were gained as a slime.</b>\n\n")
+			}
+
 			if (player.hasStatusEffect(StatusEffects.SlimeCraving)) { //Slime craving stuff
 				if (player.rearBody.type != RearBody.METAMORPHIC_GOO || player.arms.type != Arms.GOO || !LowerBody.isGoo(player)) {
 					outputText("\n<b>You no longer feel the need to stockpile fluids in your body. Geeze just how much of a slut did this make you?</b>\n");
@@ -1948,7 +1977,15 @@ public class PlayerEvents extends BaseContent implements TimeAwareInterface {
 						if (player.spe > 1) player.addStatusValue(StatusEffects.SlimeCraving, 3, 0.1); //Keep track of how much has been taken from speed
 						player.dynStats("str",-1,"spe", -0.1, "lus", 2);
 						player.buff("Fluid Growth").addStat("tou.mult",-0.04,0).withText("Fluid Growth!");
-						player.buff("Fluid Growth").addStat("int.mult",-0.04,0).withText("Fluid Growth!");
+						player.buff("Fluid Growth").addStat("int.mult", -0.04, 0).withText("Fluid Growth!");
+						player.slime_feed_height -= 1;
+						if (player.slime_feed_height <=-2) {
+							player.tallness += Math.floor(player.slime_feed_height / 2);
+							outputText("[pg]Your gel-like body seems to eat it's self from the lack of additional fluids.  " +
+							"It feels like your about "+(0-Math.floor(player.slime_feed_height / 2))+" inch"+(Math.floor(player.slime_feed_height / 2)>1 ? "es":"")+" shorter.");
+							player.slime_feed_height -= Math.floor(player.slime_feed_height/ 2) * 2;
+							if (player.tallness <= 0) player.tallness = 1;
+						}
 						player.addStatusValue(StatusEffects.SlimeCraving, 2, 0.1); //Keep track of how much has been taken from strength
 					}
 				}
@@ -1966,6 +2003,13 @@ public class PlayerEvents extends BaseContent implements TimeAwareInterface {
 				player.rearBody.type = RearBody.NONE;
 				needNext = true;
 			}
+			if (player.hasPerk(PerkLib.QueenCore) && player.hasStatusEffect(StatusEffects.SlimeArmy) && player.perkv1(PerkLib.QueenCore) != player.statusEffectv1(StatusEffects.SlimeArmy)) {
+				//outputText("\n<b>Ruling over your subjects fills you with power!</b>\n");
+				var newNum:Number = 0.01*( player.statusEffectv1(StatusEffects.SlimeArmy) - player.perkv1(PerkLib.QueenCore)) ;
+				player.buff("Queen Core").addStrMult(newNum).addTouMult(newNum).addSpeMult(newNum).addIntMult(newNum).addWisMult(newNum).addLibMult(newNum);
+				player.addPerkValue(PerkLib.QueenCore, 1, player.statusEffectv1(StatusEffects.SlimeArmy) - player.perkv1(PerkLib.QueenCore));
+			}
+
 			//Knowledge is power
 			needNext = player.gainOrLosePerk(PerkLib.KnowledgeIsPower, player.isRaceCached(Races.RATATOSKR), "Becoming more of a Ratatoskr your memory seems to have grown and as such the ability the analyze and properly catalogue your opponents many weaknesses as well as new fighting skills.", "Becoming less of a Ratatoskr your memory has become hazy, your wits slowing down to that of a standard human.") || needNext;
 

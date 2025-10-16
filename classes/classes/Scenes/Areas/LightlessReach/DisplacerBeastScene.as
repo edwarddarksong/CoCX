@@ -8,6 +8,7 @@ package classes.Scenes.Areas.LightlessReach
 import classes.BaseContent;
 import classes.GlobalFlags.kFLAGS;
 import classes.PerkLib;
+import classes.Scenes.SceneLib;
 import classes.StatusEffects;
 
 public class DisplacerBeastScene extends BaseContent {
@@ -36,6 +37,7 @@ public class DisplacerBeastScene extends BaseContent {
 
     public function displacerBeastVictory():void {
         clearOutput();
+		if (SceneLib.uniqueSexScene.slimeAbsorbCheck()){SceneLib.uniqueSexScene.slimeAbsorbMenu();return;}
         outputText("The beast is defeated, but as you expected it simply decides to flee by teleporting elsewhere. It left some gems behind however, which is a welcome sight.");
         cleanupAfterCombat();
     }

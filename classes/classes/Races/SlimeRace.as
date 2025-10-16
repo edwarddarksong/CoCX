@@ -50,6 +50,7 @@ public class SlimeRace extends Race {
 				}, +1)
 				.hasStatusEffect(StatusEffects.SlimeCraving, "Slime Craving", +1)
 				.hasPerk(PerkLib.SlimeCore, +1)
+				.hasPerk(PerkLib.RoyalSlimeJelly, +5)
 				.hasPerk(PerkLib.GOBXChemical, -1000);
 		
 		addConditionedScores(function (body:BodyData):Boolean {
@@ -67,8 +68,8 @@ public class SlimeRace extends Race {
 		addMutation(IMutationsLib.SlimeMetabolismIM);
 		addMutation(IMutationsLib.SlimeFluidIM);
 		
-		buildTier(10, "slime")
-				.namesMaleFemale("slime boi", "slime girl")
+		buildTier(10, "Slime")
+				.namesMaleFemale("Slime boi", "Slime Girl")
 				.buffs({
 					"tou.mult": +1.00,
 					"spe.mult": -0.40,
@@ -76,12 +77,22 @@ public class SlimeRace extends Race {
 				})
 				.end();
 		
-		buildTier(14, "slime queen")
+		buildTier(16, "Elder Slime")
 				.buffs({
-					"tou.mult": +1.15,
+					"tou.mult": +1.25,
 					"spe.mult": -0.50,
-					"lib.mult": +1.60
+					"lib.mult": +1.65
 				})
+				.end();
+		
+		buildTier(24, "Queen Slime")
+				.buffs({
+					"tou.mult": +4.25,
+					"spe.mult": -0.75,
+					"lib.mult": +3.65,
+					"str.mult": +3.65
+				})
+				.requirePerk(PerkLib.TransformationImmunity2)
 				.end();
 	}
 }

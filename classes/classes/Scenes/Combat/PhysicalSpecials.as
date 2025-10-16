@@ -188,16 +188,15 @@ public class PhysicalSpecials extends BaseCombatContent {
 						if (isEnemyInvisible) bd.disable("You cannot use offensive skills against an opponent you cannot see or target.");
 					}
 					//Slime-Based Skills
-					if (player.lowerBody == LowerBody.GOO && (player.isSlime() || player.hasPerk(PerkLib.DarkSlimeEmpressCore))) {
-						bd = buttons.add("Spread", spreadSlime).hint("Spread some of your slime around, covering some of the ground.\n HP cost: "+10+"% ("+Math.round(player.maxHP()/10)+")\n\nFree action");
-						if (player.isFlying()) bd.disable("You cannot spread slime while flying.");
+					if (player.lowerBody == LowerBody.GOO && player.getSlimeControl()>0) {
+						bd = buttons.add("Spread", spreadSlime).hint("Spread some of your slime around, covering some of the ground, costs HP.");
 					}
 					//DarkSlime Skills
-					if (player.lowerBody == LowerBody.GOO && player.isRaceCached(Races.DARKSLIME) && (player.hasPerk(PerkLib.RoyalSlimeJelly) || player.hasPerk(PerkLib.DarkSlimeEmpressCore)) ) {
-						bd = buttons.add("Form Slimes", formSlimeArmy).hint("Create <b>"+monster.getStatusValue(StatusEffects.SlimeSurround,1)*(player.hasPerk(PerkLib.DarkSlimeEmpressCore) ? 4:2)+"</b> Slimes from slime you've spread on the ground");
+					if (player.lowerBody == LowerBody.GOO && player.isRace(Races.DARKSLIME,1,false) && player.getSlimeControl()>1 ) {
+						bd = buttons.add("Form Slimes", formSlimeArmy).hint("Create <b>"+monster.getStatusValue(StatusEffects.SlimeSurround,1)*(1+player.getSlimeControl())+"</b> Slimes from slime you've spread on the ground");
 						if (!monster.hasStatusEffect(StatusEffects.SlimeSurround) || monster.getStatusValue(StatusEffects.SlimeSurround,1)<1) bd.disable("You cannot create Slimes without slime on the ground.");
 					}
-					if (player.lowerBody == LowerBody.GOO && player.isRaceCached(Races.DARKSLIME) && (player.hasPerk(PerkLib.RoyalSlimeJelly) || player.hasPerk(PerkLib.DarkSlimeEmpressCore))) {
+					if (player.lowerBody == LowerBody.GOO && player.isRace(Races.DARKSLIME,1,false) && player.getSlimeControl()>1 ) {
 						bd = buttons.add("Slimes Attack", slimeArmyAttack).hint("Command your <b>"+monster.getStatusValue(StatusEffects.SlimeSurround,2)+"</b> slimes to attack with their various weapons");
 						if (!monster.hasStatusEffect(StatusEffects.SlimeSurround) || monster.getStatusValue(StatusEffects.SlimeSurround,2)<1) bd.disable("You have not formed any slimes.");
 					}
@@ -549,9 +548,10 @@ public class PhysicalSpecials extends BaseCombatContent {
 					bd.disable("<b>You need more time before you can shoot ink again.</b>\n\n");
 				} else if (isEnemyInvisible) bd.disable("You cannot use offensive skills against an opponent you cannot see or target.");
 			}
-			if (player.hasVagina() && (player.isRaceCached(Races.COW) || player.perkv1(IMutationsLib.LactaBovinaOvariesIM) >= 1 || (player.perkv1(IMutationsLib.HumanOvariesIM) >= 3 && player.racialScore(Races.HUMAN) > 17)) && !player.hasPerk(PerkLib.ElementalBody)) {
+			if (player.hasVagina() && ((player.isRaceCached(Races.COW) || player.perkv1(IMutationsLib.LactaBovinaOvariesIM) >= 1 || (player.perkv1(IMutationsLib.HumanOvariesIM) >= 3 && player.racialScore(Races.HUMAN) > 17)) || 
+			player.hasSlimeAbility("Slime Blast"))&& !player.hasPerk(PerkLib.ElementalBody)) {
 				var blaaaast2:String = player.perkv1(IMutationsLib.LactaBovinaOvariesIM) >= 3 ? " (cooldown of "+(player.hasPerk(PerkLib.NaturalInstincts) ? "3":"4")+" rounds before it can be used again)" : "";
-				bd = buttons.add("Milk Blast", milkBlast).hint("Blast your opponent with a powerful stream of milk, arousing and damaging them. The power of the jet is related to arousal, libido and production." + blaaaast2 + "\n");
+				bd = buttons.add("Milk Blast", milkBlast).hint("Blast your opponent with a powerful stream of "+(player.hasSlimeAbility("Slime Blast") ? "slime":"milk")+", arousing and damaging them. The power of the jet is related to arousal, libido and production." + blaaaast2 + "\n");
 				if (player.perkv1(IMutationsLib.LactaBovinaOvariesIM) >= 3) bd.requireLust(200);
 				else bd.requireLust(100);
 				if (player.hasStatusEffect(StatusEffects.CooldownMilkBlast)) {
@@ -559,9 +559,10 @@ public class PhysicalSpecials extends BaseCombatContent {
 					else bd.disable("You can't use it more than once during fight.");
 				} else if (isEnemyInvisible) bd.disable("You cannot use offensive skills against an opponent you cannot see or target.");
 			}
-			if (player.hasCock() && (player.isRaceCached(Races.MINOTAUR) || player.perkv1(IMutationsLib.MinotaurTesticlesIM) >= 1 || (player.perkv1(IMutationsLib.HumanTesticlesIM) >= 3 && player.racialScore(Races.HUMAN) > 17)) && !player.hasPerk(PerkLib.ElementalBody)) {
+			if (player.hasCock() && player.hasBalls() && ((player.isRaceCached(Races.MINOTAUR) || player.perkv1(IMutationsLib.MinotaurTesticlesIM) >= 1 || (player.perkv1(IMutationsLib.HumanTesticlesIM) >= 3 && player.racialScore(Races.HUMAN) > 17)) || 
+			player.hasSlimeAbility("Slime Blast"))&& !player.hasPerk(PerkLib.ElementalBody)) {
 				var blaaaast1:String = player.perkv1(IMutationsLib.MinotaurTesticlesIM) >= 3 ? " (cooldown of "+(player.hasPerk(PerkLib.NaturalInstincts) ? "3":"4")+" rounds before it can be used again)" : "";
-				bd = buttons.add("Cum Cannon", cumCannon).hint("Blast your opponent with a powerful stream of cum, arousing and damaging them. The power of the jet is related to arousal, libido and production. " + blaaaast1 + "\n");
+				bd = buttons.add("Cum Cannon", cumCannon).hint("Blast your opponent with a powerful stream of "+(player.hasSlimeAbility("Slime Blast") ? "slime":"cum")+", arousing and damaging them. The power of the jet is related to arousal, libido and production. " + blaaaast1 + "\n");
 				if (player.perkv1(IMutationsLib.MinotaurTesticlesIM) >= 3) bd.requireLust(200);
 				else bd.requireLust(100);
 				if (player.hasStatusEffect(StatusEffects.CooldownCumCannon)) {
@@ -871,9 +872,10 @@ public class PhysicalSpecials extends BaseCombatContent {
 					bd.disable("<b>You need more time before you can perform Warrior Shout again.</b>\n\n");
 				}
 			}
-			if (player.hasVagina() && (player.isRaceCached(Races.COW) || player.perkv1(IMutationsLib.LactaBovinaOvariesIM) >= 1 || (player.perkv1(IMutationsLib.HumanOvariesIM) >= 3 && player.racialScore(Races.HUMAN) > 17)) && !player.hasPerk(PerkLib.ElementalBody)) {
+			if (player.hasVagina() && ((player.isRaceCached(Races.COW) || player.perkv1(IMutationsLib.LactaBovinaOvariesIM) >= 1 || (player.perkv1(IMutationsLib.HumanOvariesIM) >= 3 && player.racialScore(Races.HUMAN) > 17))  || 
+			player.hasSlimeAbility("Slime Blast")) && !player.hasPerk(PerkLib.ElementalBody)) {
 				var blaaaast2:String = player.perkv1(IMutationsLib.LactaBovinaOvariesIM) >= 3 ? " (cooldown of "+(player.hasPerk(PerkLib.NaturalInstincts) ? "3":"4")+" rounds before it can be used again)" : "";
-				bd = buttons.add("Milk Blast", milkBlast).hint("Blast your opponent with a powerful stream of milk, arousing and damaging them. The power of the jet is related to arousal, libido and production." + blaaaast2 + "\n");
+				bd = buttons.add("Milk Blast", milkBlast).hint("Blast your opponent with a powerful stream of "+(player.hasSlimeAbility("Slime Blast") ? "slime":"milk")+", arousing and damaging them. The power of the jet is related to arousal, libido and production." + blaaaast2 + "\n");
 				if (player.perkv1(IMutationsLib.LactaBovinaOvariesIM) >= 3) bd.requireLust(200);
 				else bd.requireLust(100);
 				if (player.hasStatusEffect(StatusEffects.CooldownMilkBlast)) {
@@ -881,9 +883,10 @@ public class PhysicalSpecials extends BaseCombatContent {
 					else bd.disable("You can't use it more than once during fight.");
 				} else if (isEnemyInvisible) bd.disable("You cannot use offensive skills against an opponent you cannot see or target.");
 			}
-			if (player.hasCock() && (player.isRaceCached(Races.MINOTAUR) || player.perkv1(IMutationsLib.MinotaurTesticlesIM) >= 1 || (player.perkv1(IMutationsLib.HumanTesticlesIM) >= 3 && player.racialScore(Races.HUMAN) > 17)) && !player.hasPerk(PerkLib.ElementalBody)) {
+			if (player.hasCock() && player.hasBalls() && ((player.isRaceCached(Races.MINOTAUR) || player.perkv1(IMutationsLib.MinotaurTesticlesIM) >= 1 || (player.perkv1(IMutationsLib.HumanTesticlesIM) >= 3 && player.racialScore(Races.HUMAN) > 17)) || 
+			player.hasSlimeAbility("Slime Blast")) && !player.hasPerk(PerkLib.ElementalBody)) {
 				var blaaaast1:String = player.perkv1(IMutationsLib.MinotaurTesticlesIM) >= 3 ? " (cooldown of "+(player.hasPerk(PerkLib.NaturalInstincts) ? "3":"4")+" rounds before it can be used again)" : "";
-				bd = buttons.add("Cum Cannon", cumCannon).hint("Blast your opponent with a powerful stream of cum, arousing and damaging them. The power of the jet is related to arousal, libido and production. " + blaaaast1 + "\n");
+				bd = buttons.add("Cum Cannon", cumCannon).hint("Blast your opponent with a powerful stream of "+(player.hasSlimeAbility("Slime Blast") ? "slime":"cum")+", arousing and damaging them. The power of the jet is related to arousal, libido and production. " + blaaaast1 + "\n");
 				if (player.perkv1(IMutationsLib.MinotaurTesticlesIM) >= 3) bd.requireLust(200);
 				else bd.requireLust(100);
 				if (player.hasStatusEffect(StatusEffects.CooldownCumCannon)) {
@@ -2622,7 +2625,7 @@ public class PhysicalSpecials extends BaseCombatContent {
 			player.createStatusEffect(StatusEffects.CooldownMilkBlast, cdd, 0, 0, 0);
 		}
 		else player.createStatusEffect(StatusEffects.CooldownMilkBlast, 0, 0, 0, 0);
-		outputText("You grab both of your udder smirking as you point them toward your somewhat confused target. You moan a pleasured Mooooooo as you open the dam splashing [themonster] with a twin jet of milk so powerful it is blown away hitting the nearest obstacle. ");
+		outputText("You grab both of your "+(player.hasSlimeAbility("Slime Blast") ? "slimey breasts":"udders")+", smirking as you point them toward your somewhat confused target. You moan a pleasured \"<i>Mooooooo</i>\" as you open the dam splashing [themonster] with twin jets of "+(player.hasSlimeAbility("Slime Blast") ? "slime":"milk")+" so powerful it is blown away, hitting the nearest obstacle. ");
 		var damage:Number = 0;
 		damage += player.lactationQ();
 		damage *= (player.lust100 * 0.01);
@@ -2655,6 +2658,8 @@ public class PhysicalSpecials extends BaseCombatContent {
 			if (player.perkv1(IMutationsLib.MightyLowerHalfIM) >= 3) stunDura += 1;
 			else monster.createStatusEffect(StatusEffects.Stunned, stunDura, 0, 0, 0);
 		}
+		player.applySlimeAbLingeringAcid();
+		player.applySlimeAbStickySlime();
 		outputText("\n\n");
 		combat.WrathGenerationPerHit2(5);
 		combat.heroBaneProc(damage);
@@ -2670,7 +2675,7 @@ public class PhysicalSpecials extends BaseCombatContent {
 			player.createStatusEffect(StatusEffects.CooldownCumCannon, cdd, 0, 0, 0);
 		}
 		else player.createStatusEffect(StatusEffects.CooldownCumCannon, 0, 0, 0, 0);
-		outputText("You begin to masturbate fiercely, your [balls] expending with stacked semen as you ready to blow. Your cock shoot a massive jet of cum, projecting [themonster] away and knocking it prone. ");
+		outputText("You begin to masturbate fiercely, your [balls] expending, stacked with "+(player.hasSlimeAbility("Slime Blast") ? "slime":"cum")+" as you're ready to blow. Your cock shoots a massive jet of "+(player.hasSlimeAbility("Slime Blast") ? "slime":"cum")+", projecting [themonster] away and knocking it prone. ");
 		var damage:Number = 0;
 		damage += player.cumQ();
 		damage *= (player.lust100 * 0.01);
@@ -2702,6 +2707,8 @@ public class PhysicalSpecials extends BaseCombatContent {
 			if (player.perkv1(IMutationsLib.MightyLowerHalfIM) >= 3) stunDura += 1;
 			else monster.createStatusEffect(StatusEffects.Stunned, stunDura, 0, 0, 0);
 		}
+		player.applySlimeAbLingeringAcid();
+		player.applySlimeAbStickySlime();
 		outputText("\n\n");
 		combat.WrathGenerationPerHit2(5);
 		combat.heroBaneProc(damage);
@@ -2844,6 +2851,8 @@ public class PhysicalSpecials extends BaseCombatContent {
 		lustDmgF = Math.round(lustDmgF);
 		monster.teased(lustDmgF);
 		if (crit) outputText(" <b>Critical!</b>");
+		player.applySlimeAbLingeringAcid();
+		player.applySlimeAbStickySlime();
 		outputText("\n\n");
 		monster.statStore.addBuffObject({spe:-15}, "Poison",{text:"Poison"});
 		combat.teaseXP(1 + combat.bonusExpAfterSuccesfullTease());
@@ -2851,12 +2860,23 @@ public class PhysicalSpecials extends BaseCombatContent {
 		enemyAI();
 	}
 
-	public function spreadSlime():void {
-		flags[kFLAGS.LAST_ATTACK_TYPE] = 4;
+	public function spreadSlime(amount:int=0):void {
 		clearOutput();
-		var cost:Number = 0.1;
+		var cost:Number = 0.05;
 		var maxhp:Number = player.maxHP();
-		if(player.HP - (maxhp*cost)  < (player.minHP()+((maxhp*cost)/2))) {
+		if (amount == 0){
+			outputText("How much slime do you spread?");
+			menu();
+			addButton(0, "None", combatMenu, false);
+			var c:int = 0;
+			for each(var a:String in ["Small", "Medium", "Large", "Very Large", "Massive"]){
+				c += 1;
+				addButton(c, a, spreadSlime, c).hint("Spread a "+a+" amount of your slime around, covering some of the ground.\n HP cost: "+10*c+"% ("+Math.round(player.maxHP()*0.1*c)+")").disableIf(player.HP - (maxhp*cost*c)  < (player.minHP()+((maxhp*cost*c)/2)), "You don't have the energy.");
+			}
+			return;
+		}
+		flags[kFLAGS.LAST_ATTACK_TYPE] = 4;
+		if(player.HP - (maxhp*cost*amount)  < (player.minHP()+((maxhp*cost*amount)/2))) {
 			clearOutput();
 			outputText("You just don't have the energy to spread your slime around right now...");
 			menu();
@@ -2870,7 +2890,6 @@ public class PhysicalSpecials extends BaseCombatContent {
 			addButton(0, "Next", combatMenu, false);
 			return;
 		}
-		
 		if(monster is EncapsulationPod) {
 			clearOutput();
 			outputText("You can't spread your slime while you're trapped inside something.");
@@ -2882,7 +2901,7 @@ public class PhysicalSpecials extends BaseCombatContent {
 		
 		outputText(" You cover some of the ground with part of your slimy body.");
 		player.HP-=(maxhp*cost);
-		monster.createOrAddStatusEffect(StatusEffects.SlimeSurround, 1, 1);
+		monster.createOrAddStatusEffect(StatusEffects.SlimeSurround, 1, 1*amount);
 		outputText("You spread some slime from your gooey body around.\n");
 		
 		var locText:String = "the ground.";
@@ -2892,6 +2911,9 @@ public class PhysicalSpecials extends BaseCombatContent {
 		}
 		
 		switch(monster.getStatusValue(StatusEffects.SlimeSurround,1)){
+			case 0:
+				outputText("Your slime doesn't cover any part of "+locText);
+				break;
 			case 1:
 				outputText("Your slime now covers a small part of "+locText);
 				break;
@@ -2909,8 +2931,7 @@ public class PhysicalSpecials extends BaseCombatContent {
 		}
 		outputText("(<b>"+monster.getStatusValue(StatusEffects.SlimeSurround,1)+"</b>)");
 		outputText("\n\n");
-		menu();
-		addButton(0, "Next", combatMenu, false);
+		enemyAI();
 	}
 	
 	public function formSlimeArmy():void {
@@ -2918,7 +2939,7 @@ public class PhysicalSpecials extends BaseCombatContent {
 		clearOutput();
 		
 		var slimeNum:Number = monster.getStatusValue(StatusEffects.SlimeSurround, 1);
-		var slimePerNum:Number = player.hasPerk(PerkLib.DarkSlimeEmpressCore) ? 4:2;
+		var slimePerNum:Number = 1+player.getSlimeControl();
 		
 		monster.addStatusValue(StatusEffects.SlimeSurround, 2, slimeNum*slimePerNum);
 		monster.addStatusValue(StatusEffects.SlimeSurround, 1, -slimeNum);
@@ -2944,12 +2965,12 @@ public class PhysicalSpecials extends BaseCombatContent {
 		
 		if (dmgType!=2 || player.hasPerk(PerkLib.EromancyExpert)) {
 			if (player.hasPerk(PerkLib.HistoryTactician) || player.hasPerk(PerkLib.PastLifeTactician)) damage *= combat.historyTacticianBonus();
-			if (player.hasPerk(PerkLib.CommandingTone)) damage *= 0.1;
-			if (player.hasPerk(PerkLib.DiaphragmControl)) damage *= 0.1;
-			if (player.hasPerk(PerkLib.VocalTactician)) damage *= 0.15;
+			if (player.hasPerk(PerkLib.CommandingTone)) damage *= 1.1;
+			if (player.hasPerk(PerkLib.DiaphragmControl)) damage *= 1.1;
+			if (player.hasPerk(PerkLib.VocalTactician)) damage *= 1.15;
 			if (player.hasPerk(PerkLib.RacialParagon)) damage *= combat.RacialParagonAbilityBoost();
 			//if (player.hasPerk(PerkLib.NaturalArsenal)) damage *= 2; // Should this count for Arsenal?
-			if (player.hasPerk(PerkLib.RoyalSlimeJelly)) damage *= 0.2;
+			if (player.hasPerk(PerkLib.RoyalSlimeJelly)) damage *= 1.2;
 			if (player.hasPerk(PerkLib.DarkSlimeEmpressCore)) dmgAmp += 0.2;
 			if (player.hasPerk(PerkLib.DarkSlimeEmpressCore) && isAuto==false) dmgAmp += 0.2;
 		
@@ -2969,7 +2990,7 @@ public class PhysicalSpecials extends BaseCombatContent {
 			}
 			
 			
-			damage *= dmgAmp;
+			damage += damage * dmgAmp;
 		}
 		
 		
@@ -2991,7 +3012,9 @@ public class PhysicalSpecials extends BaseCombatContent {
 		if (isDark) combat.doDarknessDamage(damage, true, true);
 		if(!isDark && dmgType==1) combat.doPhysicalDamage(damage,true,true);
 		if(dmgType==2)	monster.teased(Math.round(monster.lustVuln * damage),false);
-		if(canActMore && rand(15)==1)slimeArmySingleAttack(ogDmg,dmgType,false)
+		if (canActMore && rand(15) == 1) slimeArmySingleAttack(ogDmg, dmgType, false)
+		player.applySlimeAbLingeringAcid(false);
+		player.applySlimeAbStickySlime(false);
 	}
 	
 	public function slimeArmyAttack(autoAttack:Boolean=false):void {
@@ -3008,10 +3031,10 @@ public class PhysicalSpecials extends BaseCombatContent {
 			if (r >75)sAtks[3]+=1
 		}
 		
-		var sDam0:Number = (combat.scalingBonusIntelligence()+combat.scalingBonusToughness())*1.8;//melee
-		var sDam1:Number = combat.scalingBonusToughness()*2.6;//ranged
+		var sDam0:Number = (combat.scalingBonusIntelligence()+combat.scalingBonusToughness())*0.9;//melee
+		var sDam1:Number = combat.scalingBonusIntelligence()*1.2;//ranged
 		var sDam2:Number = combat.scalingBonusLibido()*0.08;//lust
-		var sDam3:Number = combat.scalingBonusIntelligence()*5;//dark/sacrifice
+		var sDam3:Number = combat.scalingBonusIntelligence()*4;//dark/sacrifice
 		
 		
 		
@@ -4928,7 +4951,7 @@ public class PhysicalSpecials extends BaseCombatContent {
 		if (combat.checkConcentration()) return; //Amily concentration
 		outputText("You plunge on [themonster] and let your liquid body engulf it. ");
 		//WRAP IT UPPP    plural
-		if((40 + rand(player.spe) > monster.spe)) {
+		if(((40*(1+player.getSlimeControl())) + rand(player.spe) > monster.spe)) {
 			outputText("[Themonster] ends up encased in your fluid form kicking and screaming to get out.");
 			monster.createStatusEffect(StatusEffects.GooEngulf, 3 + rand(3),0,0,0);
 		}
@@ -4936,7 +4959,7 @@ public class PhysicalSpecials extends BaseCombatContent {
 		else {
 			//Failure (-10 HPs) -
 			if (monster.hasStatusEffect(StatusEffects.SlimeSurround) && monster.getStatusValue(StatusEffects.SlimeSurround, 1) > (monster.plural ? 2:0)){
-				monster.addStatusValue(StatusEffects.SlimeSurround, 1, (monster.plural ? 3:1));
+				monster.addStatusValue(StatusEffects.SlimeSurround, 1, -(monster.plural ? 3:1));
 				outputText("You use a "+(monster.plural ? "large":"small")+" amount of slime on the ground to encase [themonster]"+(monster.plural ? "s":"")+".");
 				monster.createStatusEffect(StatusEffects.GooEngulf, 3 + rand(3),0,0,0);
 				outputText("\n\n");

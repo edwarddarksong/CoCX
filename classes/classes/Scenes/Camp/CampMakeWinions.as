@@ -1049,6 +1049,7 @@ public class CampMakeWinions extends BaseContent
 			outputText("What are you gonna do now?\n\n");
 			menu();
 			addButton(10, "Scavenge", golemScavenge1);
+			if (SceneLib.uniqueSexScene.slimeAbsorbCheck()) addButton(7, "Absorb", SceneLib.uniqueSexScene.slimeAbsorbScene);
 			addButton(14, "Leave", cleanupAfterCombat);
 		}
 		public function postFightGolemOptions2():void {
@@ -1057,6 +1058,7 @@ public class CampMakeWinions extends BaseContent
 			outputText("What are you gonna do now?\n\nAmount of golems you can scavenge: "+player.statusEffectv1(StatusEffects.GolemScavenge)+"\n\n");
 			menu();
 			addButton(10, "Scavenge", golemScavenge2);
+			if (SceneLib.uniqueSexScene.slimeAbsorbCheck()) addButton(7, "Absorb", SceneLib.uniqueSexScene.slimeAbsorbScene);
 			addButton(14, "Leave", cleanupAfterCombat);
 		}
 		public function postFightGolemOptions3():void {
@@ -1064,6 +1066,7 @@ public class CampMakeWinions extends BaseContent
 			outputText("What are you gonna do now?\n\n");
 			menu();
 			addButton(10, "Scavenge", golemScavenge3);
+			if (SceneLib.uniqueSexScene.slimeAbsorbCheck()) addButton(7, "Absorb", SceneLib.uniqueSexScene.slimeAbsorbScene);
 			addButton(14, "Leave", cleanupAfterCombat);
 		}
 		public function postFightGolemOptions4():void {
@@ -1072,6 +1075,7 @@ public class CampMakeWinions extends BaseContent
 			outputText("What are you gonna do now?\n\nAmount of golems you can scavenge: "+player.statusEffectv1(StatusEffects.GolemScavenge)+"\n\n");
 			menu();
 			addButton(10, "Scavenge", golemScavenge4);
+			if (SceneLib.uniqueSexScene.slimeAbsorbCheck()) addButton(7, "Absorb", SceneLib.uniqueSexScene.slimeAbsorbScene);
 			addButton(14, "Leave", cleanupAfterCombat);
 		}
 		public function postFightGolemOptions5(subtype:Number):void {
@@ -1079,6 +1083,7 @@ public class CampMakeWinions extends BaseContent
 			outputText("What are you gonna do now?\n\n");
 			menu();
 			addButton(10, "Scavenge", golemScavenge5, subtype);
+			if (SceneLib.uniqueSexScene.slimeAbsorbCheck()) addButton(7, "Absorb", SceneLib.uniqueSexScene.slimeAbsorbScene);
 			addButton(14, "Leave", cleanupAfterCombat);
 		}
 		private function golemScavenge1():void {

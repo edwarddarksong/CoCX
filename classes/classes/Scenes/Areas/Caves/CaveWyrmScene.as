@@ -5,6 +5,7 @@
 package classes.Scenes.Areas.Caves 
 {
 import classes.*;
+import classes.Scenes.SceneLib;
 import classes.GlobalFlags.kFLAGS;
 
 public class CaveWyrmScene extends BaseContent
@@ -21,6 +22,7 @@ public function berserkingCaveWyrmEncounter():void {
 
 public function winningOverCaveWyrm():void {
 	clearOutput();
+	if (SceneLib.uniqueSexScene.slimeAbsorbCheck()){SceneLib.uniqueSexScene.slimeAbsorbMenu();return;}
 	menu();
 	if (player.hasCock()) {
 		addButton(0, "Nope", cleanupAfterCombat);

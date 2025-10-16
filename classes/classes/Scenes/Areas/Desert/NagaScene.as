@@ -843,6 +843,7 @@ public function nagaFUCKSJOOOOOO():void {
 
 //internal function nagaRapeChoice():void {
 public function nagaRapeChoice():void {
+	if (SceneLib.uniqueSexScene.slimeAbsorbCheck()){SceneLib.uniqueSexScene.slimeAbsorbMenu();return;}
 	if (monster.HP < 1) outputText("You've defeated the " + gorgonOrNaga + "!  ");
 	else outputText("The " + gorgonOrNaga + " writhes in the sand, masturbating feverishly!  She's completely forgotten about fighting you.  ");
 	if (player.lust < 33) {

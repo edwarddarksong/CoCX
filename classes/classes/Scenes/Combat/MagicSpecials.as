@@ -5859,13 +5859,8 @@ public class MagicSpecials extends BaseCombatContent {
 		if (player.armor == armors.FMDRESS && player.isWoodElf()) lustDmg *= 2;
 		if (player.perkv1(IMutationsLib.BlackHeartIM) >= 4) lustDmg += combat.teases.teaseBaseLustDamage();
 		monster.teased(Math.round(monster.lustVuln * lustDmg));
-		
-		var LSVulnLimit:int = 0;
-		if (player.hasPerk(PerkLib.CorruptTheBody)) LSVulnLimit = -1;
-		if (player.hasPerk(PerkLib.CorruptTheHeart)) LSVulnLimit = -2;
-		if (player.hasPerk(PerkLib.CorruptTheMind)) LSVulnLimit = -3;
-		if (player.hasPerk(PerkLib.CorruptTheSoul) || monster.lustVuln > LSVulnLimit){
-			monster.lustVuln += (0.1+ (player.perkv1(IMutationsLib.BlackHeartIM)/20));
+		if (monster.lustVuln < monster.lustVulnCap()){
+			monster.lustVuln = ( monster.lustVuln+ (0.1+ (player.perkv1(IMutationsLib.BlackHeartIM)/20))<monster.lustVulnCap() ? monster.lustVuln+ (0.1+ (player.perkv1(IMutationsLib.BlackHeartIM)/20)):monster.lustVulnCap() );
 			outputText("\n\nA bit of the magic seems to remain within [themonster].\nIt seems to be making [monster him] more lustful.");
 		}
 		

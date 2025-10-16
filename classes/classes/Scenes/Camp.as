@@ -2553,6 +2553,8 @@ public class Camp extends NPCAwareContent{
 		else addButtonDisabled(1, "Phylactery Enchantment", "Req. you to be a Lich with phylactery.");
 		if (player.isAutomata()) addButton(2, "Remodel", CampRemodel).disableIf(isNightTime, "It's too dark to remodel your body.");
 		else addButtonDisabled(2, "Remodel", "Req. you to be an Automata.");
+		if (player.isSlime()) addButton(3, "Manage Slime", CampSlimeMenu1);
+		else addButtonDisabled(3, "Manage Slime", "Req. you to be a Slime.");
 		addButton(14, "Back", campMiscActions);
 	}
 
@@ -3596,6 +3598,236 @@ public class Camp extends NPCAwareContent{
 		if (player.statStore.hasBuff("Damaged")) player.statStore.removeBuffs("Damaged");
 		if (player.hasStatusEffect(StatusEffects.CombatWounds)) player.removeStatusEffect(StatusEffects.CombatWounds);
 		doNext(camp.returnToCampUseOneHour);
+	}
+
+		private function CampSlimeMenu1():void {
+		clearOutput();
+		menu();
+		outputText("\n\nYour slime control is: "+player.getSlimeControl());
+
+		addButton(0, "Mold", CampSlimeMenu2).hint("Use your fluids to change the shape of your body.");
+		addButton(1, "Abilities", CampSlimeMenu4).hint("Manage the abilities you've absorbed.");
+		addButton(2, "Army", CampSlimeMenu3).hint("Manage your slime army.").disableIf(!player.isRace(Races.SLIME, 3, false),"Req. you to be a Queen Slime.");
+
+
+		addButton(14, "Back", campMiscActions2);
+	}
+	private function CampSlimeMenu2():void {
+		clearOutput();
+		var delay:Number = 18;
+		if (player.hasPerk(PerkLib.Metabolization)) delay += 18;
+		if (player.hasPerk(PerkLib.ImprovedMetabolization)) delay += 18;
+		if (player.hasPerk(PerkLib.GreaterMetabolization)) delay += 18;
+		//if (player.isSlime()) player.addStatusValue(StatusEffects.SlimeCraving, 1, 0.5);
+		//else player.addStatusValue(StatusEffects.SlimeCraving, 1, 1);
+		outputText("Stored: "+player.statusEffectv1(StatusEffects.SlimeCraving));
+		outputText("\nStored2: "+(17 - player.statusEffectv1(StatusEffects.SlimeCraving))*delay );
+		outputText("\n\nYour slime control is: "+player.getSlimeControl());
+		outputText("\nYou are able to alter the shape of your slimy membrane.");
+		outputText("\n hair: "+player)
+		menu();
+		addButton(0, "Hair", CampSlimeMenu2_1, 0).disableIf(player.hairType!=3,"Your hair isn't made of slime.");
+		addButton(1, "Face", CampSlimeMenu2_1, 1);
+		addButton(2, "Upper-Body", CampSlimeMenu2_1, 2)
+		addButton(3, "Lower-Body", CampSlimeMenu2_1, 3).disableIf(player.lowerBody != LowerBody.GOO, "Your lower body isn't made of slime.");
+
+		addButton(14, "Back", CampSlimeMenu1);
+	}
+	private function CampSlimeMenu2_1(actionID:int):void {
+		clearOutput();
+		menu();
+		var v:int;
+		switch (actionID) {
+			case 0:{
+				outputText("Hair length: "+player.hairLength);
+				addButton(0,"Grow Hair",CampSlimeMenu2_2, 0, actionID);
+				addButton(1,"Shrink Hair",CampSlimeMenu2_2, 1, actionID);
+				break;
+			}
+			case 1:{
+				outputText("Femininity: "+(player.femininity>50 ? (player.femininity-50)*2:0));
+				outputText("\nMasculinity: "+(player.femininity<50 ? (50-player.femininity)*2:0));
+				addButton(0,"Feminine",CampSlimeMenu2_2, 2, actionID).disableIf(player.femininity>=player.maxFem,"You can't get more Feminine.");
+				addButton(1,"Masculine",CampSlimeMenu2_2, 3, actionID).disableIf(player.femininity<=0,"You can't get more Masculine.");
+				break;
+			}
+			case 2:{
+				outputText("Muscles: " + player.tone);
+				for (v= 0; v < player.breastRows.length; v+=1) {
+					outputText("\nBreast cup size:" +player.breastCup(v)+" ("+player.breastRows[v].breastRating+")")
+				}
+				addButton(0, "Grow Breasts", CampSlimeMenu2_2, 4, actionID).disableIf(player.breastRows[player.smallestTitRow()].breastRating >= 200, "Your breasts can't grow any more.");
+				addButton(1, "Shrink Breasts", CampSlimeMenu2_2, 5, actionID).disableIf(player.breastRows[player.biggestTitRow()].breastRating <= 0, "Your breasts can't shrink any more.");
+				addButton(2,"Form Muscles",CampSlimeMenu2_2, 7, actionID).disableIf(player.tone>=player.maxToneCap(),"You can't have any more Muscles.");
+				addButton(3,"Shrink Muscles",CampSlimeMenu2_2, 8, actionID).disableIf(player.tone<=0,"You can't have any less Muscles.");
+				break;
+			}
+			case 3:{
+				outputText("You have " + ((player.hasVagina() || player.hasCock()) ? ( "a "+( player.hasCock() ? "[cock]"+( player.hasVagina() ? " and a [vagina]":"" ):"[vagina]")  ):"no genitals.") );
+				addButton(0, "Gain Vagina", CampSlimeMenu2_2, 9, actionID).disableIf(player.hasVagina(), "You already have a Vagina.");
+				addButton(1, "Lose Vagina", CampSlimeMenu2_2, 10, actionID).disableIf(!player.hasVagina(), "You don't have a Vagina.");
+				addButton(2, "Grow Cock", CampSlimeMenu2_2, 11, actionID)
+				addButton(3, "Shrink Cock", CampSlimeMenu2_2, 12, actionID).disableIf(!player.hasCock(), "You don't have a Cock.");
+
+			}
+
+		}
+		addButton(14, "Back", CampSlimeMenu2);
+		//doNext(CampSlimeMenu2)
+	}
+	private function CampSlimeMenu2_2(actionID:int,back:int):void {
+		clearOutput();
+		var cost:int = 1;
+		switch (actionID) {
+			case 0:{
+				if (player.hairLength  >=10) player.hairLength = 20;
+				if (player.hairLength < 10) player.hairLength = 10;
+				outputText("Your hair grew to: "+player.hairLength);
+				break;
+			}
+			case 1:{
+				if (player.hairLength  <=10) player.hairLength = 0;
+				if (player.hairLength > 10) player.hairLength = 10;
+				outputText("Your hair shrank to: "+player.hairLength);
+				break;
+			}
+			case 2:{
+				outputText(player.modFem(player.maxFem,10));
+				break;
+			}
+			case 3:{
+				outputText(player.modFem(0,10));
+				break;
+			}
+
+			case 4:{
+				 player.breastRows[player.smallestTitRow()].breastRating += 1;
+				outputText("Your breasts grew to: "+player.breastCup(player.smallestTitRow()));
+				break;
+			}
+			case 5:{
+				 player.breastRows[player.biggestTitRow()].breastRating -= 1;
+				outputText("Your breasts shrank to: "+player.breastCup(player.biggestTitRow()));
+				break;
+			}
+
+			case 7:{
+				outputText(player.modTone(player.maxToneCap(), 10));
+				break;
+			}
+			case 8:{
+				outputText(player.modTone(0, 10));
+				break;
+			}
+			case 9:{
+				transformations.VaginaHuman().applyEffect(false);
+				 player.vaginas[0].vaginalWetness = VaginaClass.WETNESS_DROOLING;
+				player.vaginas[0].vaginalLooseness = VaginaClass.LOOSENESS_GAPING;
+				player.clitLength = .4;
+				outputText("A [vagina] opens between your slimy legs.");
+				cost = 2;
+				break;
+			}
+			case 10:{
+				outputText("Your [vagina] closes, disappearing from between your legs.");
+				transformations.VaginaNone().applyEffect(false);
+				break;
+			}
+			case 11:{
+				if (!player.hasCock()){
+					transformations.CockHuman().applyEffect(false);
+					outputText("A [cock] grows from between your slimy legs.");
+					player.cocks[0].cockLength = 5;
+					player.cocks[0].cockThickness = 1;
+					cost = 2;
+				}
+				else {
+					player.cocks[0].cockLength += 5;
+					player.cocks[0].cockThickness += 1;
+					outputText("Your [cock] grows to "+player.cocks[0].cockLength+" inches long, and "+player.cocks[0].cockThickness+" inch"+(player.cocks[0].cockThickness>1 ? "es":"")+" thick.")
+				}
+				break;
+			}
+			case 12:{
+				if (player.cocks[0].cockLength<=5){
+					player.cocks[0].cockLength = 0;
+					player.cocks[0].cockThickness = 0;
+					outputText("Your [cock] shrinks and disappears from between your legs.");
+					transformations.CockNone().applyEffect(false);
+				}
+				else {
+					player.cocks[0].cockLength -= 5;
+					player.cocks[0].cockThickness = ( player.cocks[0].cockThickness>2 ? player.cocks[0].cockThickness-1:1);
+					outputText("Your [cock] shrinks to "+player.cocks[0].cockLength+" inches long, and "+player.cocks[0].cockThickness+" inch"+(player.cocks[0].cockThickness>1 ? "es":"")+" thick.")
+				}
+				break;
+			}
+
+
+		}
+		CoC.instance.mainViewManager.updateCharviewIfNeeded();
+		menu();
+		addButton(0, "Next", CampSlimeMenu2_1,back);
+
+	}
+
+	private function CampSlimeMenu3():void {
+		clearOutput();
+		outputText("You rule over "+player.statusEffectv1(StatusEffects.SlimeArmy)+" slime girls.");
+		menu();
+
+
+		addButton(14, "Back", CampSlimeMenu1);
+	}
+
+	private function CampSlimeMenu4(page:int=1):void {
+		clearOutput();
+		//outputText(player.statusEffectv1(StatusEffects.SlimeAbilities)+"\n")//For debugging
+		var count:int = 0; var c:int = SceneLib.uniqueSexScene.slimeAbilities.length;
+		for each (var a:String in SceneLib.uniqueSexScene.slimeAbilities){if (player.hasSlimeAbility(a,"any")) count += 1;}
+
+		outputText("Toggle abilities you've absorbed from fallen enemies. ("+count+"/"+c+")\n");
+		menu();
+		var perPage:int = 10;
+		if (page > 1) outputText("...");
+		while (c-->0){
+			if (SceneLib.uniqueSexScene.slimeAbilities.length - c > (perPage * page) - perPage && SceneLib.uniqueSexScene.slimeAbilities.length - c <= perPage * page) CampSlimeMenu4_1(SceneLib.uniqueSexScene.slimeAbilities.length - 1 - c, page, perPage);
+		}
+
+		if (SceneLib.uniqueSexScene.slimeAbilities.length > perPage * page) addButton(13, "Next", CampSlimeMenu4, page+1);
+		if (page > 1) addButton(12, "Previous", CampSlimeMenu4, page-1);
+		outputText("\n");
+		if (SceneLib.uniqueSexScene.slimeAbilities.length > (perPage * page)) outputText("...");
+
+		addButton(14, "Back", CampSlimeMenu1);
+	}
+	private function CampSlimeMenu4_1(num:int,page:int,perPage:int):void {
+		var ab:String = SceneLib.uniqueSexScene.slimeAbilities[num];
+		addButton(num%perPage, (player.hasSlimeAbility(ab,"1") ? ab:(player.hasSlimeAbility(ab,"any")  ? ab.toLowerCase():"???")), CampSlimeMenu4_2, ab, page).disableIf(!player.hasSlimeAbility(ab,"any"),"You have not absorbed this ability yet.");
+		ab=player.hasSlimeAbility(ab,"any") ? ab:"???";
+		if (ab != "???") outputText("\n\n<b>" + ab + "</b>(" + (player.hasSlimeAbility(ab, "1") ? "active":"inactive") + ") - ");
+		else outputText("\n\n<b> ??? </b> - ");
+
+		switch(ab) {
+			case "Slime Claw": {outputText("Grow claws; attack with your claws while using Feral style, inflecting bleed."); break; }
+			case "Succuslime": {outputText("Your slime arouses enemies when you're hit by a physical attack."); break; }
+			case "Slime Munch": {outputText("Grow sharp teeth; attack with your mouth while using Feral style, inflicting bleed."); break; }
+			case "Sticky Slime": {outputText("Your unarmed and feral attacks are super sticky causing your victim to slow down on each strike."); break; }
+			case "Slime Hair": {outputText("Grow slimy vines; attack with your hair while using Feral style."); break; }
+			case "Slime Blast": {outputText("Allows use of \"Milk Blast\" or \"Cum Cannon\" depending on genitalia."); break; }
+			case "Poison Touch": {outputText("Your feral and unarmed strikes inflict tease damage as well as inhibition corrosion, increasing tease damage by 1% per hit."); break; }
+			case "Lingering Acid": {outputText("Your melee and slime attacks corrode the enemy's armour, make it's flesh more vulnerable, increasing all damage taken by 0.5%."); break; }
+			case "Slime Harden": {outputText("When waiting, reduce incoming damage by 99%. (5 turn cooldown)"); break; }
+			case "Slime Shot": {outputText("Allows your melee attacks to hit flying enemies."); break; }
+			case "Fluid Euphoria": {outputText("Increases your speed by 1% every time you feed on bodily fluids."); break; }
+
+			case "???": {outputText("???"); break; }
+			default: outputText("No description listed");
+		}
+	}
+	private function CampSlimeMenu4_2(ab:String,page:int):void {
+		player.addSlimeAbility(ab, player.hasSlimeAbility(ab, "1") ? "2":"1");
+		CampSlimeMenu4(page);
 	}
 
 	private function fillUpPillBottle(pills:ItemType, result:ItemType, grade:String):void {
@@ -5908,4 +6140,5 @@ public function rebirthFromBadEnd():void {
 	}
 
 }
+
 }

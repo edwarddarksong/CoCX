@@ -8,6 +8,9 @@ import classes.GlobalFlags.kFLAGS;
 import classes.Scenes.Areas.Beach.GooGirlBeach;
 import classes.Scenes.SceneLib;
 import classes.display.SpriteDb;
+import classes.BodyParts.Gills;
+import classes.BodyParts.Skin;
+import classes.BodyParts.Tail;
 
 public class GooGirlScene extends AbstractLakeContent
 	{
@@ -85,15 +88,38 @@ public class GooGirlScene extends AbstractLakeContent
 		private function gooGirlBadEnd():void
 		{
 			clearOutput();
-			outputText("You collapse, your strength gone, body open to the investigation of the goo-girl.  Her expression, however, has become one of excitement and focus rather than playful curiosity.  With exaggerated gestures, the " + gooColor() + " girl tilts her head left and right, shakes her shoulders, and wraps her fingers together, as if cracking her knuckles. Rubbing the dripping palms of her hands together, she draws backward before leaping at you. Instead of the slimy, semi-solid splash you were expecting, the girl sinks INTO your body, her muck penetrating your membrane and filling you in a way you've never felt before. Her crimson nucleus flashing rapidly within you, every inch of your body quivers and bulges under the pressure of her added mass.\n\n");
+			outputText("You collapse, your strength gone, body open to the investigation of the goo-girl. " +
+			" Her expression, however, has become one of excitement and focus rather than playful curiosity.  " +
+			"With exaggerated gestures, the " + gooColor() + " girl tilts her head left and right, shakes her shoulders, and wraps her fingers together, as if cracking her knuckles." +
+			" Rubbing the dripping palms of her hands together, she draws backward before leaping at you. " +
+			"Instead of the slimy, semi-solid splash you were expecting, the girl sinks INTO your body, her muck penetrating your membrane and filling you in a way you've never felt before. " +
+			"Her crimson nucleus flashing rapidly within you, every inch of your body quivers and bulges under the pressure of her added mass.\n\n");
 
-			outputText("The invading nucleus swells and twitches, sending waves of ecstasy through your mind before erupting in an orgasm of memories. Your vision is filled with decades of life in an instant, every moment in the goo-girl's existence adding itself to your own. Gradually, they become your experiences as well, perfectly crystal clear memories blossoming in your mind. Engulfing solid creatures to learn their shapes, milking proteins from the "+GooLocation+"'s inhabitants and visitors, mimicking humanoid behaviors to better understand them. The girl's life - your life - flashes in brilliant hues of heat and motion, your body climaxing helplessly at the mental overload until, after what seems like a lifetime, the goo-girl slides out of you with an expression of blissful satisfaction on her face.\n\n");
+			outputText("The invading nucleus swells and twitches, sending waves of ecstasy through your mind before erupting in an orgasm of memories. " +
+			"Your vision is filled with decades of life in an instant, every moment in the goo-girl's existence adding itself to your own. " +
+			"Gradually, they become your experiences as well, perfectly crystal clear memories blossoming in your mind. " +
+			"Engulfing solid creatures to learn their shapes, milking proteins from the " + GooLocation + "'s inhabitants and visitors, mimicking humanoid behaviors to better understand them." +
+			" The girl's life - your life - flashes in brilliant hues of heat and motion, your body climaxing helplessly at the mental overload until, after what seems like a lifetime, the goo-girl slides out of you with an expression of blissful satisfaction on her face.\n\n");
 
-			outputText("Panting, trying to come to terms with your new memories, you notice that the girl's nucleus appears to be half a heart, neatly bisected down the middle. You look at yourself and find the other half floating inside your chest, shedding its soft, scarlet light in time to your gasping breath. The half-hearted girl smiles mischievously and winks at you. A sudden wash of heat erupts from her " + gooColor2() + " body, and it's all you can do to avert your face from the blaze of magma she's made of herself. The meaning of the girl's warmth is immediately apparent - all across the surface of the "+GooLocation+", dozens of cute, curious heads poke above the water, gel-like faces locking onto the intense signal of your companion. Sliding swiftly, the other girls rush toward you, their faces positively brimming with an expression that almost seems like lustful hunger.\n\n");
+			outputText("Panting, trying to come to terms with your new memories, you notice that the girl's nucleus appears to be half a heart, neatly bisected down the middle. " +
+			"You look at yourself and find the other half floating inside your chest, shedding its soft, scarlet light in time to your gasping breath. " +
+			"The half-hearted girl smiles mischievously and winks at you. " +
+			"A sudden wash of heat erupts from her " + gooColor2() + " body, and it's all you can do to avert your face from the blaze of magma she's made of herself. " +
+			"The meaning of the girl's warmth is immediately apparent - all across the surface of the " + GooLocation + ", dozens of cute, curious heads poke above the water, gel-like faces locking onto the intense signal of your companion. " +
+			"Sliding swiftly, the other girls rush toward you, their faces positively brimming with an expression that almost seems like lustful hunger.\n\n");
 
-			outputText("Your body feels leaden and overburdened, making escape impossible. When the girls reach you, they dive into your now-permeable membrane, one by one at first, then two and three at a time. You grow and swell as they fill you, cascades of memories and thoughts suffocating you like the torrent of a waterfall. Your bloated, expanding body responds to the psychic barrage in the only way it can - releasing an orgasm of gushing fluids from your body in lustful spree, showering the girls milling about you in protein-rich, gooey milk and cum, feeding their bodies even as they force-feed your mind. Hundreds of years unpack themselves within you, tiny heart buds floating inside of your chest, gradually merging into one, vibrant crimson orb.");
+			outputText("Your body feels leaden and overburdened, making escape impossible. " +
+			"When the girls reach you, they dive into your now-permeable membrane, one by one at first, then two and three at a time. " +
+			"You grow and swell as they fill you, cascades of memories and thoughts suffocating you like the torrent of a waterfall. " +
+			"Your bloated, expanding body responds to the psychic barrage in the only way it can - releasing an orgasm of gushing fluids from your body in lustful spree, showering the girls milling about you in protein-rich, gooey milk and cum, feeding their bodies even as they force-feed your mind. " +
+			"Hundreds of years unpack themselves within you, tiny heart buds floating inside of your chest, gradually merging into one, vibrant crimson orb.");
 			//[Next]
-			doNext(gooGirlBadEnd2);
+			if (player.racialTierCached(Races.SLIME) < 2 && player.inte+player.wis >= 500) outputText("\n<b>Your body has grown beyond your control.</b>");
+			if (player.racialTierCached(Races.SLIME) > 1 && player.inte+player.wis < 500) outputText("\n<b>You lose your sense of self.</b>");
+			if (player.racialTierCached(Races.SLIME) < 2 && player.inte+player.wis < 500) outputText("\n<b>You lose control.</b>");
+			
+			if (player.inte+player.wis >= 500 && player.racialTierCached(Races.SLIME) > 1) doNext(gooGirlBadEnd2TurnedGood);
+			else doNext(gooGirlBadEnd2);
 		}
 
 		private function gooGirlBadEnd2():void
@@ -115,7 +141,61 @@ public class GooGirlScene extends AbstractLakeContent
 			outputText("Radiating heat and vibrating the water between the four of you, you communicate your will to the girls. Hundreds of your sisters have already expanded the "+GooLocation+"'s shores to the mountains and others have nearly reached the forest. Deep in your memory, however, there remains a city in the desert filled with your friends. It seems like such a long time since you've seen them. Once your children flood the desert, you'll be able to pay a visit and show them what you've become. Maybe they'll even want to be reborn themselves. Yes, you decide, they will definitely want to join you.");
 			EventParser.gameOver();
 		}
-
+		
+		private function gooGirlBadEnd2TurnedGood():void {
+			clearOutput();
+			outputText("Against all odds, perhaps due to your training, you manage to hold yourself together. " +
+			"\nHaving prevented your sense of self from being fractured and overwhelmed by the memories of every slime girl in the lake  that merged with your own; " +
+			"understanding dawns upon you, you have been chosen. " +
+			"\n<i>\"Chosen for what?\"</i> you ask yourself." +
+			"\nInstinctively you let your core pulse, transmitting your thoughts and intent to your subjects. " +
+			"\nAs the newest Queen slime you are quite literally touched by your lesser kin's affection. " +
+			"\nIt is with great pride that you will rule over the slimes of the lake. " +
+			"\nYour first order is for your subjects to move with you to your camp. " +
+			"\nYou will be in need of an army when you strike at the source of your kin's enemy; the pollution known as the demons which has flooded the lake with the aberrant green oozes. " +
+			"\nThe slimes all begin sending heat signals all across the lake, starting the march. " +
+			"\n\n<b>You are now a ruler, the Queen of slimes, a being made of mythical fluid, capable of godlike powers. </b>" +
+			"\nBy your divine birthright as the slime Queen you will crush the demon and put an end to the war!");
+			flags[kFLAGS.GOOGIRL_CONSECUTIVE_LOSSES] = -9000;
+			CoC.instance.transformations.SkinGoo(Skin.COVERAGE_COMPLETE, 0).applyEffect(false);
+			CoC.instance.transformations.HairGoo.applyEffect(false);
+			CoC.instance.transformations.ArmsGoo.applyEffect(false);
+			CoC.instance.transformations.LowerBodyGoo.applyEffect(false);
+			CoC.instance.transformations.RearBodyMetamorphicGoo.applyEffect(false);
+			CoC.instance.transformations.EyesHuman.applyEffect(false);
+			CoC.instance.transformations.EyesChangeColor(["blue"]).applyEffect(false);
+			CoC.instance.transformations.EarsHuman.applyEffect(false);
+			CoC.instance.transformations.FaceHuman.applyEffect(false);
+			CoC.instance.transformations.TongueHuman.applyEffect(false);
+			CoC.instance.transformations.VaginaHuman().applyEffect(false);
+			CoC.instance.transformations.AntennaeNone.applyEffect(false);
+			CoC.instance.transformations.HornsNone.applyEffect(false);
+			CoC.instance.transformations.WingsNone.applyEffect(false);
+			player.tallness += 60;
+			 if (!player.hasStatusEffect(StatusEffects.SlimeCraving)) player.createStatusEffect(StatusEffects.SlimeCraving, 0, 0, 0, 1);
+			 if (!player.hasStatusEffect(StatusEffects.SlimeArmy)) player.createStatusEffect(StatusEffects.SlimeArmy, 20, 0, 0, 0);
+			player.createPerk(PerkLib.TransformationImmunity2, 12, 0, 0, 0);
+			if (!player.hasPerk(PerkLib.SlimeCore)){
+				outputText("\n\n(<b>Gained New Perk: Slime Core - Moisture craving builds at a greatly reduced rate.</b>)");
+				player.createPerk(PerkLib.SlimeCore, 0, 0, 0, 0);
+			}
+			player.gainPerk(PerkLib.RoyalSlimeJelly, true);
+			player.gainPerk(PerkLib.QueenCore, true);
+			
+			CoC.instance.mainViewManager.updateCharviewIfNeeded();
+			player.updateRacialParagon(Races.SLIME);
+			player.tail.type = Tail.NONE;
+			player.gills.type = Gills.NONE;
+			
+			outputText("\n\n<b>Gained Perk: Transformation Immunity!</b> " + PerkLib.TransformationImmunity2.longDesc + "\n");
+			
+			outputText("\n<b>"+player.statusEffectv1(StatusEffects.SlimeArmy)+" slime girls are now following your orders.</b>\n\n");
+			
+			player.slimeFeed(3);
+			
+			cleanupAfterCombat();
+		}
+		
 		public function slimeBadEnd():void { //Another gooey bad end; you should have drunk more fluids
 			outputText("\nYour entire body wobbles as your strength fails, collapsing into itself.  You struggle to rise, but your form loses more and more rigidity, melting into an amorphous blob.  Without the strength to rise, you've no hope of getting the fluids you need.  The aching craving for moisture drives you to roll to the lake, which you slip into.  With the constant runoff of bodily fluids that enter the lake, you're able to subsist for a time, forgetting about your mission as the all-consuming need devours your personality.");
 			doNext(slimeBadEnd2);
@@ -307,8 +387,23 @@ public class GooGirlScene extends AbstractLakeContent
 			flags[kFLAGS.GOOGIRL_BIRTHS]++;
 			outputText("\n");
 			outputText("There is a lurching in your belly that steals the breath from you. As seconds pass, the quivering kicks increase and you're forced to the ground as your womb feels like it's been set aflame by the heat pouring from your stowaway goo-girl. You pant and spread your labia with two fingers, the chill of your hands on your inflamed sex so sweet that you almost cum from the mere touch. Your cervix clenches involuntarily and you try to relax as much as possible, but the slime inside of you hardly needs the help. Squishing and slurping in gouts of syrupy fluid, she trickles from your uterus, sliding out of your tunnel in spurting gouts. You sigh and let her force her seething warmth from within you, the small puddle of ooze growing larger as it pools together. Finally, the small, red heart pops out of your tunnel and you allow yourself a big gulp of chill air to resuscitate your seared lungs.\n\n");
-			monster = new GooGirl();//because if we don't, the gooColor4() goes crazy.
-			outputText("The small " + gooColor4() + " sludge quivers, but seems unable to take a human shape. Extending pseudopods, it experimentally prods at your skin, trying to gets its bearings. You shiver as the goo slides over your flesh, poking you wetly from time to time. When it finds your breasts, the goo works up your mounds and slurps at your teats, milk filling the blob with a creamy tint that makes it larger and gives its membrane a firmer texture. It takes about ten minutes to flop its way across your entire body before sliding off of you and wriggling at your feet. It shifts again, but this time, manages to form a featureless head. Slowly, gradually, it adds more, morphing shoulders, arms, a waist, and even hips. Her body ripples and the blank slime morphs into a perfect miniature copy of you! It stares up at its mother with a happy expression before lurching away, toward the "+(rand(3) == 0 ? "beach":"lake")+". Even though you were just her incubator and template, you can't help but feel a little pride at your goo child entering the wild world with a fearless sense of exploration.");
+			if (player.isSlime() && player.hasStatusEffect(StatusEffects.SlimeArmy)){
+				outputText("The small " + player.skinColor + " sludge quivers, but seems unable to take a human shape." +
+				" Extending pseudopods, it experimentally prods at your skin, trying to gets its bearings. " +
+				"You shiver as the goo slides over your flesh, poking you wetly from time to time. " +
+				"When it finds your breasts, the goo works up your mounds and slurps at your teats, milk filling the blob with a creamy tint that makes it larger and gives its membrane a firmer texture." +
+				" It takes about ten minutes to flop its way across your entire body before sliding off of you and wriggling at your feet." +
+				" It shifts again, but this time, manages to form a featureless head. " +
+				"Slowly, gradually, it adds more, morphing shoulders, arms, a waist, and even hips. Her body ripples and the blank slime morphs into a perfect miniature copy of you!" +
+				" she stares up at her mother with a happy expression, before "+( player.statusEffectv1(StatusEffects.SlimeArmy)>0 ? ("lurching toward her sister"+( player.statusEffectv1(StatusEffects.SlimeArmy)>1 ? "s":"" )+"."):"expressing a desire assist you." )+" " +
+				"\nIt seems your child already wants to join you in your fight.")
+				player.addStatusValue(StatusEffects.SlimeArmy, 1, 1);
+				outputText("\n\n<b>"+player.statusEffectv1(StatusEffects.SlimeArmy)+" slime girl"+( player.statusEffectv1(StatusEffects.SlimeArmy)>1 ? "s are now":" is now" )+"  following your orders.</b>\n\n");
+			}
+			else {
+				monster = new GooGirl();//because if we don't, the gooColor4() goes crazy.
+				outputText("The small " + gooColor4() + " sludge quivers, but seems unable to take a human shape. Extending pseudopods, it experimentally prods at your skin, trying to gets its bearings. You shiver as the goo slides over your flesh, poking you wetly from time to time. When it finds your breasts, the goo works up your mounds and slurps at your teats, milk filling the blob with a creamy tint that makes it larger and gives its membrane a firmer texture. It takes about ten minutes to flop its way across your entire body before sliding off of you and wriggling at your feet. It shifts again, but this time, manages to form a featureless head. Slowly, gradually, it adds more, morphing shoulders, arms, a waist, and even hips. Her body ripples and the blank slime morphs into a perfect miniature copy of you! It stares up at its mother with a happy expression before lurching away, toward the "+(rand(3) == 0 ? "beach":"lake")+". Even though you were just her incubator and template, you can't help but feel a little pride at your goo child entering the wild world with a fearless sense of exploration.");
+			}
 			dynStats("lus", 50, "scale", false);
 		}
 

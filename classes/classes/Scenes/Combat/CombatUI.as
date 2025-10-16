@@ -114,6 +114,12 @@ public class CombatUI extends BaseCombatContent {
 				else btnMelee.show("Attack", combat.basemechmeleeattacks, "Attempt to attack the enemy with your mech "+weapon+".  Damage done is determined by your strength and weapon.").icon("A_Melee");
 				if (combat.isEnemyInvisible) btnMelee.disable("You cannot use attack an opponent you cannot see or target.");
 			}
+			else if (player.hasStatusEffect(StatusEffects.SlimeArmy) && player.statusEffectv1(StatusEffects.SlimeArmy)>0 && (!monster.isFlying() || player.hasSlimeAbility("Slime Shot")) ){
+				btnMelee.show("A.Attack",combat.slimeQueenArmyMelee,"Command your "+(player.statusEffectv1(StatusEffects.SlimeArmy)>1 ? ("army of "+player.statusEffectv1(StatusEffects.SlimeArmy)+" slimes,"):"slime")+" to attack.")
+			}
+			else if (player.hasSlimeAbility("Slime Shot") && (player.isUnarmedCombat() || player.isFeralCombat())){
+				btnMelee.show("Attack", combat.basemeleeattacks, "Attempt to attack the enemy with your " + player.weaponName+".  Damage done is determined by your strength and weapon.").icon("A_Melee");
+			}
 			else if ((player.isStaffTypeWeapon() || player.weapon.isWandType() || player.weaponOff.isWandType() || player.isPartiallyStaffTypeWeapon()) && player.weapon != weapons.TIDAR && player.weaponOff != weapons.TIDAR && player.hasPerk(PerkLib.StaffChanneling) && flags[kFLAGS.STAFF_CHANNELING_MODE]) {
 				//No shooting fuckbolts from Tidarion!!!
 				if (!Wings.Types[player.wings.type].canFly && Arms.Types[player.arms.type].canFly && player.isFlying && player.statusEffectv2(StatusEffects.Flying) == 0) btnMelee.disable("No way you could use your melee weapon with those arms while flying.");
@@ -1155,5 +1161,6 @@ public class CombatUI extends BaseCombatContent {
 	}
 }
 }
+
 
 

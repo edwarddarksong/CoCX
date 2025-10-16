@@ -30,6 +30,7 @@ public function lactaBovinaVictoryRapeChoices():void {
 	clearOutput();
 	spriteSelect(SpriteDb.s_LactaBovine_16bit);
 	outputText("Sexually frustrated and weak from the battle, the lacta bovine falls off on her substantial butt with a loud thump. She looks at you with pleading eyes, begging you to relieve her from her load, but you know better and find it hard not to fall for the trap that is her giant titties. In this world the winner does to the loser whatever it wants, so how will you handle that psychotic walking milk storage?");
+	if (SceneLib.uniqueSexScene.slimeAbsorbCheck()){SceneLib.uniqueSexScene.slimeAbsorbMenu();return;}
 	menu();
 	addButtonIfTrue(1, "Lick it!", lactaBovinaVictoryLickIt, "Req. to have pussy.", player.hasVagina());
 	addButtonIfTrue(2, "Sitting Boobjob", lactaBovinaVictorySittingBoobjob,

@@ -2206,6 +2206,45 @@ public class Combat extends BaseContent {
         }
     }
 
+	public function slimeQueenArmyMelee():void {slimeQueenArmy(0)}
+	public function slimeQueenArmy(mode:int,attacking:Boolean=false,damage:Number=0):void {
+		if (!attacking) {
+			var a:int = player.statusEffectv1(StatusEffects.SlimeArmy); 
+			var dmgAmp:Number = 1; var c:int = 0;
+			damage = (scalingBonusStrength() + scalingBonusToughness()) * 0.1;
+			if (player.hasPerk(PerkLib.HistoryTactician) || player.hasPerk(PerkLib.PastLifeTactician)) damage *= combat.historyTacticianBonus();
+			if (player.hasPerk(PerkLib.CommandingTone)) damage *= 1.1;
+			if (player.hasPerk(PerkLib.DiaphragmControl)) damage *= 1.1;
+			if (player.hasPerk(PerkLib.VocalTactician)) damage *= 1.15;
+			if (player.hasPerk(PerkLib.RacialParagon)) damage *= combat.RacialParagonAbilityBoost();
+			if (player.hasPerk(PerkLib.RoyalSlimeJelly)) damage *= 1.2;
+			if (player.hasPerk(PerkLib.DarkSlimeEmpressCore)) dmgAmp += 0.4;
+
+			if (flags[kFLAGS.WILL_O_THE_WISP] == 2) {
+				dmgAmp += 0.1;
+				if (player.hasPerk(PerkLib.WispLieutenant)) dmgAmp += 0.2;
+				if (player.hasPerk(PerkLib.WispCaptain)) dmgAmp += 0.3;
+				if (player.hasPerk(PerkLib.WispMajor)) dmgAmp += 0.4;
+				if (player.hasPerk(PerkLib.WispColonel)) dmgAmp += 0.5;
+			}
+			damage *= dmgAmp;
+			outputText("You command your "+(a>1 ? ("army of " + a + " slimes"):"slime")+" to attack [themonster].\n"); 
+			outputText((a > 1 ? "They ":"She ") + ( monster.isFlying() ? (( a > 1 ? "fling":"flings") + " goo at"):"start attacking") + " [themonster].\n");
+
+			while (a-->0){
+				slimeQueenArmy(mode, true, damage)
+			if (a % 6 == 0) outputText("\n");
+			}
+			 monsterDefeatCheck();
+			outputText("\n\n");
+			enemyAIImpl();
+			return; }
+
+		doPhysicalDamage(damage, true, true);
+		player.applySlimeAbLingeringAcid(false);
+        player.applySlimeAbStickySlime(false);
+	}
+
     /**
      * Mech melee attack
      * 1. Check if can attack (sealed, pacifism) and describe attack
@@ -2529,6 +2568,7 @@ public class Combat extends BaseContent {
     internal function wait():void {
         var skipMonsterAction:Boolean = false; // If false, enemyAI() will be called. If true, combatRoundOver()\
         flags[kFLAGS.IN_COMBAT_USE_PLAYER_WAITED_FLAG] = 1;
+		player.createStatusEffect(StatusEffects.BasicWait,0,0,0,0);
         if (player.hasStatusEffect(StatusEffects.KitsuneTailTangle)) {
             (monster as Kitsune).kitsuneWait();
             skipMonsterAction = true;
@@ -6036,14 +6076,14 @@ public class Combat extends BaseContent {
             switch(player.faceType){
                 case Face.ORCA:
                     // from 0.5 to 2.0 effectively +1.5
-                    biteMultiplier += 1.5;
+                    biteMultiplier += 1.5;outputText(".");
                     break;
                 case Face.ABYSSAL_SHARK:
                     // should also trigger shark_teeth and vampire
-                    biteMultiplier += 2.0;
+                    biteMultiplier += 2.0;outputText(".");
                     break;
                 case Face.SHARK_TEETH:
-                    biteMultiplier += 1.5;
+                    biteMultiplier += 1.5;outputText(".");
                     break;
                 case Face.VAMPIRE:
                     // Vampire dont have bitemultiplier bonus FeelsBadMan
@@ -6162,8 +6202,19 @@ public class Combat extends BaseContent {
                     }
                     break;
                 default:
+					if (player.hasSlimeAbility("Slime Munch")){
+						biteMultiplier += 1.25;
+						if (!monster.isImmuneToBleed()){
+                        outputText(", causing [themonster] to bleed");
+                        if (!monster.hasStatusEffect(StatusEffects.SharkBiteBleed)) monster.createStatusEffect(StatusEffects.SharkBiteBleed,15,0,0,0);
+                        else {
+                            monster.removeStatusEffect(StatusEffects.SharkBiteBleed);
+                            monster.createStatusEffect(StatusEffects.SharkBiteBleed,15,0,0,0);
+                        }
+					}
+					}
+					outputText(".");
             }
-            outputText(".");
             if (pLibHellFireCoat) ExtraNaturalWeaponAttack(biteMultiplier, "fire");
             else if (pFoxFlamePelt) ExtraNaturalWeaponAttack(biteMultiplier, "foxflame");
             else ExtraNaturalWeaponAttack(biteMultiplier);
@@ -6326,6 +6377,11 @@ public class Combat extends BaseContent {
                 default:
 
             }
+        }
+		if (player.hasSlimeAbility("Slime Hair")) {
+            outputText("You lash at your opponent with your gooey hair.");
+				ExtraNaturalWeaponAttack(0.5+(Math.floor(player.level/30)/2));
+            outputText("\n");
         }
         //CENTAUR TIME!
         if (player.isTaur()) {
@@ -7716,7 +7772,7 @@ public class Combat extends BaseContent {
                     if (flags[kFLAGS.FERAL_COMBAT_MODE] == 1 && (player.hasNaturalWeapons() || player.haveNaturalClawsTypeWeapon())) {
                         //DOING BASIC EXTRA NATURAL ATTACKS
                         outputText("You savagely strike [themonster] with your natural weapons.");
-                        if (player.hasPerk(PerkLib.LightningClaw)) {
+                        if (player.hasPerk(PerkLib.LightningClaw) || (player.hasSlimeAbility("Poison Touch")&&(player.hasSlimeAbility("Slime Claw") || player.hasSlimeAbility("Slime Munch")))) {
                             var damageLC:Number;
                             damageLC = 6 + rand(3);
                             if (player.hasPerk(PerkLib.SensualLover)) damageLC += 2;
@@ -9662,6 +9718,13 @@ public class Combat extends BaseContent {
 						else if (Forgefather.channelInlay == "amethyst") doDarknessDamage(damage, true, true);
                         else doPhysicalDamage(damage, true, true);
                 }
+				if (player.hasSlimeAbility("Poison Touch")){
+					outputText(" Your poison seeps into [Themonster].");
+					monster.lustVuln -= 0.01;
+					monster.teased((combat.teases.teaseBaseLustDamage()*0.05) * monster.lustVuln, false);
+				}
+				player.applySlimeAbLingeringAcid();
+                player.applySlimeAbStickySlime();
 				// Below down here are just for lust damage dont be confused by The Enemy I mean the damage variable
                 if (player.hasPerk(PerkLib.LightningClaw)) {
                     damage = enwa_lustClawDamage + rand(3);
@@ -10830,6 +10893,7 @@ public class Combat extends BaseContent {
 		if (tinkerDeconstruct()) damage *= 1.5;
         if (player.hasStatusEffect(StatusEffects.Minimise)) damage *= 0.01;
 		if (player.hasStatusEffect(StatusEffects.AutomataOverdrive)) damage *= 2;
+		if (monster.hasStatusEffect(StatusEffects.LingeringAcid)) damage *= 1 + (monster.statusEffectv1(StatusEffects.LingeringAcid) / 20);
         if (player.hasPerk(PerkLib.Sadist)) {
             damage *= 3;
             if (player.armorName == "Scandalous Succubus Clothing") {
@@ -11895,7 +11959,7 @@ public class Combat extends BaseContent {
 
     public function awardPlayer(nextFunc:Function = null):void {
 		if (monster.hasStatusEffect(StatusEffects.SlimeSurround)&&(monster.getStatusValue(StatusEffects.SlimeSurround,1)>0 || monster.getStatusValue(StatusEffects.SlimeSurround,2)>0)){
-			var slimeCount:int = monster.getStatusValue(StatusEffects.SlimeSurround, 1) + (monster.getStatusValue(StatusEffects.SlimeSurround, 2)/(player.hasPerk(PerkLib.DarkSlimeEmpressCore) ? 4:2));
+			var slimeCount:int = monster.getStatusValue(StatusEffects.SlimeSurround, 1) + (monster.getStatusValue(StatusEffects.SlimeSurround, 2)/(player.getSlimeControl()+1));
 			player.HP += Math.round((player.maxHP()*0.08) * slimeCount);
 			//if (player.HP > player.maxHP()) player.HP = player.MaxHP;
 			outputText("\nYou absorb the remaining slime. <b>([font-heal]"+Math.round((player.maxHP()*0.08)*slimeCount)+"[/font])</b>\n");
@@ -11974,9 +12038,13 @@ public class Combat extends BaseContent {
         //Reset menuloc
         //This is now automatic - newRound arg defaults to true:	menuLoc = 0;
         hideUpDown();
+		if (player.hasStatusEffect(StatusEffects.BasicWait)) player.removeStatusEffect(StatusEffects.BasicWait);
         if (player.hasStatusEffect(StatusEffects.MinotaurKingMusk)) {
             dynStats("lus", Math.round(player.maxLust()*0.03));
         }
+		if (player.hasStatusEffect(StatusEffects.CooldownSlimeHarden)){
+			player.addStatusValue(StatusEffects.CooldownSlimeHarden, 1, -1); if (player.statusEffectv1(StatusEffects.CooldownSlimeHarden) < 1) player.removeStatusEffect(StatusEffects.CooldownSlimeHarden); 
+		}
         if (player.hasStatusEffect(StatusEffects.Sealed)) {
             //Countdown and remove as necessary
             if (player.statusEffectv1(StatusEffects.Sealed) > 0) {
@@ -15959,7 +16027,8 @@ public function OrcaJuggle():void {
     if (player.fatigue + physicalCost(20) > player.maxOverFatigue()) {
         outputText("You are too tired to juggle with [themonster].");
         addButton(0, "Next", combatMenu, false);
-    } else {
+    } else 
+		{
         fatigue(20, USEFATG_PHYSICAL);
         var damage:Number = 0;
         damage += meleeUnarmedDamageNoLagSingle();
@@ -20314,5 +20383,6 @@ private function touSpeStrScale(stat:int):Number {
 }
 
 }
+
 
 

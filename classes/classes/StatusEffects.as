@@ -679,6 +679,8 @@ import classes.StatusEffects.VampireThirstEffect;
 		public static const SiegweirdTraining:StatusEffectType              = mk("Siegweird Training");
 		public static const SiegweirdTraining2:StatusEffectType             = mk("Siegweird Training 2");
 		public static const SimplifiedNonPCTurn:StatusEffectType            = mk("Simplified NonPC Turn"); //v1 stands for smart allies, v2 for stupid
+		public static const SlimeAbilities:StatusEffectType            		= mk("Slime Abilities");//1=ability_tracker
+		public static const SlimeArmy:StatusEffectType                  	= mk("Slime Army");//1=count, 4=mode
 		public static const SlimeCraving:StatusEffectType                   = mk("Slime Craving");
 		public static const SlimeCravingFeed:StatusEffectType               = mk("Slime Craving Feed");
 		public static const SlimeCravingOutput:StatusEffectType             = mk("Slime Craving Output");
@@ -897,6 +899,7 @@ import classes.StatusEffects.VampireThirstEffect;
 		public static const LadyRafflesiaDevSer:StatusEffectType 	= mk("Lady Rafflesia Devour servants");
 		public static const LadyRafflesiaGrab:StatusEffectType  	= mk("Lady Rafflesia Grab");
 		public static const Level:StatusEffectType              	= mk("level");
+		public static const LingeringAcid:StatusEffectType     		= mk("Lingering Acid");//1 = incoming damage increase %
 		public static const LingeringSlime:StatusEffectType     	= mk("Lingering Slime");
 		public static const LoliBatGolems:StatusEffectType          = mk("LoliBatGolems");
 		public static const LowtierMagicImmunity:StatusEffectType   = mk("Low-tier magic immunity");
@@ -1439,6 +1442,7 @@ import classes.StatusEffects.VampireThirstEffect;
 		public static const CooldownSingCaptivate:StatusEffectType  			= mkCombat("Cooldown Sing Captivate");
 		public static const CooldownStormOfSisterhood:StatusEffectType        	= mkCombat("Cooldown Storm of Sisterhood");
 		public static const CooldownSlamBear:StatusEffectType            		= mkCombat("Cooldown Slam (Bear)");
+		public static const CooldownSlimeHarden:StatusEffectType            	= mkCombat("Cooldown Slime Harden");
 		public static const CooldownSnowballGenerator:StatusEffectType   		= mkCombat("Cooldown Snowball Generator");
 		public static const CooldownSonicScream:StatusEffectType         		= mkCombat("Cooldown Sonic scream");
 		public static const CooldownSoulBlast:StatusEffectType           		= mkCombat("Cooldown Soul Blast");
@@ -1473,6 +1477,8 @@ import classes.StatusEffects.VampireThirstEffect;
 		public static const CooldownHurricane:StatusEffectType       			= mkCombat("Cooldown Hurricane");
 		public static const CooldownWhitefireBeamCannon:StatusEffectType 		= mkCombat("Cooldown Whitefire Beam Cannon");
 		public static const CooldownWingBuffet:StatusEffectType          		= mkCombat("Cooldown Wing Buffet");
+
+		public static const BasicWait:StatusEffectType          		= mkCombat("Basic Wait");
 
 		public static const RemovedArmor:StatusEffectType          = mkCombat("Removed Armor");
 		public static const JCLustLevel:StatusEffectType           = mkCombat("JC Lust Level");
@@ -1526,5 +1532,6 @@ import classes.StatusEffects.VampireThirstEffect;
 			return new StatusEffectType(id,CombatStatusEffect,1);
 		}
 	}
+
 
 }

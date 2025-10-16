@@ -181,6 +181,7 @@ public class UniqueSexScenes extends BaseContent
 				USSEastrBny(),
 				USSTentRape(),
 				USSLiveDildo(),
+				USSSlimeConvert(),
 				USSJiangshiDrn(),
 				USSLichSoulDrn(),
 				USSLichZombification(),
@@ -225,7 +226,11 @@ public class UniqueSexScenes extends BaseContent
 				if (player.isGenderless()) raijuVoltTransfer();
 				else RaijuRapeSupercharged();
 				//supercharged check - forcecalls the scene if needed
-			} else addButton(btnPos, "U.Sex Scenes", openUSSmenu)
+				return;
+			} 
+			if (slimeAbsorbCheck()){slimeAbsorbMenu();return;}
+			
+			addButton(btnPos, "U.Sex Scenes", openUSSmenu)
 				.disableIf(player.hasPerk(PerkLib.ElementalBody), "You can't use unique sex scenes while being an elemental.");
 		}
 
@@ -331,6 +336,13 @@ public class UniqueSexScenes extends BaseContent
 			else btnSet.push(false, "Req. to be a automata.");
 			return btnSet;
 		}
+		private function USSSlimeConvert():Array{
+			var btnSet:Array = ["S.Convert"];
+			if (player.isRace(Races.SLIME, 3, false)) btnSet.push(slimeConvertScene, "");
+			else btnSet.push(false, "Req. to be a Queen Slime.");
+			return btnSet;
+		}
+		
         private function USSAlrauneSS():Array{
             var btnSet:Array = [];
             if (player.isAlraune()) {
@@ -544,7 +556,110 @@ public class UniqueSexScenes extends BaseContent
 				cleanupAfterCombat();
 			}
 		}
-
+		
+		public const slimeAbilities:Array = [
+			"Slime Claw", "Succuslime", "Slime Munch", "Sticky Slime", "Slime Hair", "Slime Blast", "Poison Touch", "Lingering Acid", "Slime Harden",
+			"Slime Shot", "Fluid Euphoria"
+		];//Always add new abilities onto the END of the array!!!
+		public function slimeAbsorbCheck():Boolean {return monster.hasStatusEffect(StatusEffects.GooEngulf) && player.isNaked && slimeAbsorbPerkCheck() && !monster.plural; }
+		public  function slimeAbsorbMenu():void {
+			clearOutput();
+			monster.removeStatusEffect(StatusEffects.GooEngulf);
+			menu();
+			outputText("[Themonster] is too weak to escape from your gooey grasp.\nYou think about absorbing [Themonster].");
+			//monster.defeated(false)
+			addButton(1,"Absorb",slimeAbsorbScene)
+			addButton(3,"Release",monster.defeated,false)
+			
+		}
+		private function slimeAbsorbPerkCheck():Boolean {var p:String = slimeAbsorbPossiblePerk(); return slimeAbsorbPossiblePerk() != null; }
+		private function slimeAbsorbPossiblePerk():String {
+			var mn:String = monster.short.toLocaleLowerCase();
+			
+			//if (mn == "goblin adventurer" || mn == "goblin assassin") mn = "goblin";
+			if (mn.indexOf("golem") >-1) mn = "golem";
+			if (mn.indexOf("succubus") >-1) mn = "succubus";
+			if (mn.indexOf("shark-girl") >-1) mn = "shark-girl";
+			if (mn=="primordial displacer beast")mn = "displacer beast";
+			//outputText("( mn: "+mn+" )");
+			switch (mn){
+				case "hellcat":return "Slime Claw";
+				case "succubus":return "Succuslime";
+				case "shark-girl":return "Slime Munch";
+				case "lacta bovine":return "Slime Blast";
+				case "minotaur":return "Slime Blast";
+				case "naga":return "Poison Touch";
+				case "cave wyrm":return "Lingering Acid";
+				case "golem":return "Slime Harden";
+				case "displacer beast":return "Fluid Euphoria";
+		
+				default: return null;
+			}
+		}
+		
+		
+		public function slimeAbsorbScene():void {
+			var mn:String = monster.imageName;
+			var notgolem:Boolean = mn.indexOf("golem") ==-1; 
+			outputText("You approach the [monster name] with a goopy smile recognising it for what it is right now… a delicious meal! ")
+			if (notgolem) outputText("\nRealising the danger you pose to [monster him], [monster he] begins to back away in horror.");
+			if (mn == "hellcat" || monster.hasPerk(PerkLib.EnemyTrueDemon) || mn == "lacta bovine" || mn == "cave wyrm" || monster.tailType == Tail.SPIDER_ADBOMEN || 
+			mn=="sharkgirl" || mn=="izma" || mn=="naga" || mn=="light elf" || mn=="displacer beast") {
+				outputText("\"<i>Nooooo… NO WAY! I don't want to be eaten! Stay away!</i>\" [monster he] yells." +
+				" As if you'd listen to [monster him].");
+			}
+			outputText("\nSmiling wider and drooling happily you begin to pull your meal's "+(notgolem ? "pleading":"broken")+" form into your body," +
+			" your jelly jiggling with pleasure as inches after inches of the intruder is pulled into the massive orifice that is your " +
+			(player.hasVagina() ? "slimy pussy, all the way to your womb": (player.hasCock() ? "widening slime urethra":"mouth") )+
+			".\nOnce it's all in and your victim is pleasantly squirming inside your body, you begin to convert memory and body mass");
+			if (!player.hasSlimeAbility(slimeAbsorbPossiblePerk(),"any"))/*Has yet to learn enemy's ability*/{
+				outputText(", your core radiating with newfound knowledge as you fully absorb [themonster] within yourself.");
+				//player.gainPerk(slimeAbsorbPerk(),true);
+				player.addSlimeAbility(slimeAbsorbPossiblePerk());
+				//outputText("\n(("+player.statusEffectv1(StatusEffects.SlimeAbilities)+"))\n");
+			}
+			else {
+				outputText(", a second core splitting from your own as you become pregnant with a new slime converted from the body of your meal. " +
+				"You rub your belly in delight at the new life growing within your body.");
+				//Function call to become pregnaunt 100% of the time?
+				player.knockUp(PregnancyStore.PREGNANCY_GOO_GIRL, PregnancyStore.INCUBATION_GOO_GIRL, 1, 1);
+			}
+			outputText("\n\nUtterly satisfied, you head back to camp slightly larger than before.");
+			
+			player.sexReward("whole-body");
+			statScreenRefresh();
+			cleanupAfterCombat();
+		}
+		private var slimeColorArray:Array = ["green", "magenta", "blue", "cerulean", "emerald", "pink", "milky white"];
+		public function slimeConvertScene():void {
+			clearOutput();
+			var saNum:int = player.statusEffectv1(StatusEffects.SlimeArmy)
+			var wasSlime:Boolean = monster.short.toLocaleLowerCase() == "goo-girl" || monster.short.toLocaleLowerCase() == "dark slime";
+			if (wasSlime) {
+				outputText("You stare at the poor misguided slime who defied you." +
+				" Pushing aside your anger, you touch the [themonster], seeking to welcome [monster him] into your flock." +
+				"\n[Themonster] shudders at your touch. After a minute [themonster] looks up at you; you see a hint of " + player.skinColor + " in [monster his] gooey body. " +
+				"\nIt seems that [themonster] "+(saNum>0 ? ("follow alongside her sister"+(saNum>1 ? "s":"")+" and your daughter"+(saNum>1 ? "s":"")+""):"will follow you")+" towards your goal. ");
+			}
+			else {
+				outputText("Staring at the poor misguided soul before you, you lick your "+player.skinColor+" lips in anticipation. Today ends one life of misdoing and begins one filled by righteous purpose.\n\n" +
+				"Without further ado you gently grab [monster name] and pull [monster him] into your warm motherly embrace like a child long lost and found back [monster his] parent." +
+				" Your gigantic pussy opens wide, drawing [monster name] in and you gasp in pleasure as the foreign body is sucked into your fluids." +
+				" At first panicking at the lack of air your victim is swiftly drenched with aphrodisiac and converted into a moaning mess." +
+				" The moment [monster his] mouth opens you force some of yourself inside pouring down [monster his] throat as you begin to convert flesh and tissue." +
+				" Soon a brand new slime is born within your womb and you birth it out orgasming in the pleasure of procreation as it gushes out of your royal cunt." +
+				" The newborn "+slimeColorArray[rand(slimeColorArray.length)]+" slime is confused at first then when its gaze sets on you it smiles and bow profusely in gratitude acknowledging your divinity as the slime ruler and that it has been saved from a life of villainy." +
+				" You give your new daughter a gentle head pat. "); 
+				if (saNum > 0) outputText("Your core radiating warmth and happiness as your other daughter" + (saNum > 1 ? "s":"") + " welcome" + (saNum > 1 ? "":"s") + " her with open arms.");
+			}
+			outputText("\n\nWith this small matter solved you resume your travels.");
+			player.addStatusValue(StatusEffects.SlimeArmy, 1, 1);
+			outputText("\n\n<b>"+player.statusEffectv1(StatusEffects.SlimeArmy)+" slime girl"+( player.statusEffectv1(StatusEffects.SlimeArmy)>1 ? "s are now":" is now" )+"  following your orders.</b>\n\n");
+			if(!wasSlime)player.sexReward("vaginalFluids", "Default");
+			statScreenRefresh();
+			cleanupAfterCombat();
+		}
+		
 		public function manticoreTailRapeScene():void {
 			clearOutput();
 			outputText("While your defeated foe is laying on the ground, you make a sadistic grin as you contemplate the situation. This came just as you got hungry or rather, just as your tail did.\n\n");
@@ -1140,4 +1255,4 @@ public class UniqueSexScenes extends BaseContent
 			!monster.hasPerk(PerkLib.EnemyLargeGroupType) && !monster.hasPerk(PerkLib.EnemyTrueDemon) && !monster.hasPerk(PerkLib.EnemyUndeadType) && !monster.hasPerk(PerkLib.UniqueNPC));
 		}
 }
-}
+}	

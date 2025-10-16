@@ -1238,7 +1238,7 @@ use namespace CoC;
 			return wings.type == Wings.YGGDRASIL_HUGE_4;
 		}
 		//Natural Claws (arm types and weapons that can substitude them)
-		public function haveNaturalClaws():Boolean { return Arms.Types[arms.type].claw || Arms.Types[arms.type].armSlam || Arms.Types[arms.type].scythe || LowerBody.hasClaws(this);}
+		public function haveNaturalClaws():Boolean { return Arms.Types[arms.type].claw || Arms.Types[arms.type].armSlam || Arms.Types[arms.type].scythe || LowerBody.hasClaws(this) || hasSlimeAbility("Slime Claw");}
 		public function haveNaturalClawsTypeWeapon():Boolean {return weaponName == "gauntlet with claws" || weaponName == "gauntlet with an aphrodisiac-coated claws" || weaponName == "Venoclaw" || weaponName == "hooked gauntlets" || hasAetherTwinsTier1() || hasAetherTwinsTier2() || weaponName == "moonlight claws" || weaponName == "blizzard claws";}
 		public function haveWeaponAllowingClaws():Boolean {return weaponName == "black cat glove" ;}
         public function isUnarmedCombat():Boolean { return flags[kFLAGS.FERAL_COMBAT_MODE] != 1 && isFistOrFistWeapon() ;}
@@ -1246,7 +1246,7 @@ use namespace CoC;
 		public function isFeralCombat():Boolean { return ((flags[kFLAGS.FERAL_COMBAT_MODE] == 1 && hasAllRizzForFeral()) || statStore.hasBuff("Atavism")) ;}
         public function hasAllRizzForFeral():Boolean { return ((((weaponName == "fists" || haveWeaponAllowingClaws() || weapon == game.weapons.CATGLOV) && haveNaturalClaws()) || haveNaturalClawsTypeWeapon()) || hasNaturalWeapons()) }
 		public function hasNaturalWeapons():Boolean { return (haveNaturalClaws() || hasABiteAttack() || hasAWingAttack() || hasAGoreAttack() || hasATailSlapAttack() || hasTalonsAttack() || hasTentacleAttacks() || isAlraune() || isTaur());}
-		public function hasABiteAttack():Boolean { return (Face.Types[faceType].bite || lowerBody == LowerBody.HYDRA || isSandWorm() || hasATailBiteAttack());}
+		public function hasABiteAttack():Boolean { return (Face.Types[faceType].bite || lowerBody == LowerBody.HYDRA || isSandWorm() || hasATailBiteAttack() || hasSlimeAbility("Slime Munch"));}
 		public function hasAWingAttack():Boolean { return (Wings.Types[wings.type].wingSlap || wings.type == Wings.THUNDEROUS_AURA || wings.type == Wings.WINDY_AURA);}
 		public function hasAGoreAttack():Boolean { return (Horns.Types[horns.type].gore);}
 		public function hasATailSlapAttack():Boolean { return (Tail.Types[tail.type].tailSlam || Tail.Types[tail.type].stinger || Tail.Types[tail.type].Energy || LowerBody.canTailSlam(this));}
@@ -1327,7 +1327,7 @@ use namespace CoC;
 		public function hasAetherTwinsLargerThenMediumSizedDexTwin():Boolean { return weapon == game.weapons.AETHERD && (AetherTwinsFollowers.AetherTwinsShape == "Sky-tier Gauntlets" || hasAetherTwinsTierLarge1() || hasAetherTwinsTierLarge2()); }//all dex twin forms with Large/Massive size tag
 		//Some other checks
 		public function isGoblinoid(checkRP:Boolean = true):Boolean { return (isRace(Races.GOBLIN, 1, checkRP) || isRace(Races.GREMLIN, 1, checkRP)); }
-		public function isSlime():Boolean { return (hasPerk(PerkLib.DarkSlimeCore) || hasPerk(PerkLib.SlimeCore)); }
+		public function isSlime():Boolean { return (hasPerk(PerkLib.DarkSlimeCore) || hasPerk(PerkLib.SlimeCore) || hasPerk(PerkLib.MagmaSlimeCore)); }
 		public function isHarpy():Boolean { return (isRace(Races.HARPY) || isRace(Races.THUNDERBIRD) || isRace(Races.PHOENIX)); }
 		public function isWerebeast():Boolean { return (isRace(Races.WEREWOLF) || isRace(Races.WERESHARK)); }
 		public function isNightCreature():Boolean { return (isRace(Races.VAMPIRE) || isRace(Races.BAT) || isRace(Races.JIANGSHI) || isRace(Races.DRACULA)); }
@@ -1639,6 +1639,61 @@ use namespace CoC;
 				removePerk(PerkLib.Araneathropy);
 			}
 		}
+
+		//Some slime returns/checks
+		public function getSlimeControl():int {
+			var c:int = 0;
+			if (hasPerk(PerkLib.SlimeCore)) c += 1;
+			if (hasPerk(PerkLib.DarkSlimeCore)) c += 1;
+			if (hasPerk(PerkLib.MagmaSlimeCore)) c += 1;
+			if (hasPerk(PerkLib.RoyalSlimeJelly)) c += 1;
+			if (hasPerk(PerkLib.DarkSlimeEmpressCore)) c += 1;
+			if (hasPerk(PerkLib.QueenCore)) c += 1;
+			return c}
+		public function hasSlimeAbility(ID:String,activeType:String="1"):Boolean {
+			if (!hasStatusEffect(StatusEffects.SlimeAbilities) || SceneLib.uniqueSexScene.slimeAbilities.indexOf(ID) ==-1 || 
+			SceneLib.uniqueSexScene.slimeAbilities.indexOf(ID)>=statusEffectv1(StatusEffects.SlimeAbilities).toString().length) return false;
+			var list:Array = statusEffectv1(StatusEffects.SlimeAbilities).toString().split("").reverse();
+			if (list[SceneLib.uniqueSexScene.slimeAbilities.indexOf(ID)] == activeType) return true;
+			//outputText(" ("+ID+"-check: " + list[SceneLib.uniqueSexScene.slimeAbilities.indexOf(ID)] + ")");
+			if (activeType=="any" && list[SceneLib.uniqueSexScene.slimeAbilities.indexOf(ID)] != "0") return true;
+			return false
+		}
+		public function addSlimeAbility(ID:String,setTo:String="1"):Boolean {
+			if (ID==null || !isSlime() || hasSlimeAbility(ID,setTo)) return false;
+			if (!hasStatusEffect(StatusEffects.SlimeAbilities)) createStatusEffect(StatusEffects.SlimeAbilities,0,0,0,0);
+			var list:Array = statusEffectv1(StatusEffects.SlimeAbilities).toString().split("").reverse();
+			var inID:int = SceneLib.uniqueSexScene.slimeAbilities.indexOf(ID);
+			//outputText("\nlist: " + list.length);
+			//outputText("\ninID: " + inID);
+			if (list.length <= inID){
+				var c:int = inID - list.length + 1;
+				while (c-->0) list.push("0");
+			}
+			if (list[inID] == "0") outputText("\n(<b>Gained Slime Ability - " + ID + "</b>)\n");
+			list[inID] = setTo;
+			//outputText("\nBefore: "+statusEffectv1(StatusEffects.SlimeAbilities))
+			addStatusValue(StatusEffects.SlimeAbilities, 1, -statusEffectv1(StatusEffects.SlimeAbilities));
+			//outputText("\nAfter: "+statusEffectv1(StatusEffects.SlimeAbilities))
+			addStatusValue(StatusEffects.SlimeAbilities, 1, Number(list.reverse().join("")));
+			return true;
+		}
+		public function applySlimeAbLingeringAcid(byPlayer:Boolean=true):void {
+			if (hasSlimeAbility("Lingering Acid")){
+					CoC.instance.monster.createOrAddStatusEffect(StatusEffects.LingeringAcid, 1, 1);
+					if (byPlayer) outputText(" Your acid eats away at [Themonster]. ");
+					else outputText(" Acid eats away at [Themonster]. ");
+				}
+		}
+		public function applySlimeAbStickySlime(byPlayer:Boolean=true):void {
+			if (hasSlimeAbility("Sticky Slime")){
+					CoC.instance.monster.buff("Sticky Slime").combatPermanent().addSpe(-getSlimeControl());
+					if (byPlayer) outputText(" Your slime sticks to [Themonster], slowing [monster him] down. ");
+					else outputText(" Slime sticks to [Themonster], slowing [monster him] down. ");
+				}
+		}
+
+
 
 		public function allEquipment():/*Equipable*/Array {
 			var result:Array = [];
@@ -3261,6 +3316,10 @@ use namespace CoC;
 			if (CoC.instance.monster.hasStatusEffect(StatusEffects.CorpseExplosion)) damage *= (1 - (0.2 * CoC.instance.monster.statusEffectv1(StatusEffects.CorpseExplosion)));
 			if (hasPerk(PerkLib.Comradery) && companionsInPCParty()) damage *= (1 - (0.1 * companionsInPcPartyCount()));
 			if (hasPerk(PerkLib.AlteredAnima) && cor >= 20) damage *= (1 - (0.05 * Math.round((cor - 10) / 20)));
+			if (hasSlimeAbility("Slime Harden")&&hasStatusEffect(StatusEffects.BasicWait)){
+				if (!hasStatusEffect(StatusEffects.CooldownSlimeHarden)) createStatusEffect(StatusEffects.CooldownSlimeHarden, 6, 0, 0, 0);
+				if (statusEffectv1(StatusEffects.CooldownSlimeHarden) == 6){ damage *= 0.01; outputText("Your slimy skin hardens upon impact, reducing damage. "); }
+			}
 			//Round
 			damage = Math.round(damage);
 			// we return "1 damage received" if it is in (0..1) but deduce no HP
@@ -3315,8 +3374,18 @@ use namespace CoC;
 						case 2: // physical
 						case 3: // physical
 							if (perkv1(IMutationsLib.SlimeFluidIM) >= 3 && !isFlying() && !CoC.instance.monster.isFlying()){
+								if (CoC.instance.monster.lustVuln > 0){
+									CoC.instance.monster.lustVuln = (CoC.instance.monster.lustVulnCap()<CoC.instance.monster.lustVuln+0.05 ? CoC.instance.monster.lustVuln+0.05:CoC.instance.monster.lustVulnCap())
+									//outputText(" A bit of your blood splashes onto [Themonster], making [him monster] more lustful.");
+								}
+
+								//physTeaseDmg = true;
+								//CoC.instance.monster.teased(SceneLib.combat.teases.teaseBaseLustDamage() * CoC.instance.monster.lustVuln);
+							}
+							if (hasSlimeAbility("Succuslime")){
 								physTeaseDmg = true;
-								CoC.instance.monster.teased(SceneLib.combat.teases.teaseBaseLustDamage() * CoC.instance.monster.lustVuln);
+								CoC.instance.monster.teased((SceneLib.combat.teases.teaseBaseLustDamage() * 0.1) * CoC.instance.monster.lustVuln, false);
+								//outputText(" Your slime reacts, teasing [Themonster].");
 							}
 							if (perkv1(IMutationsLib.HydraBloodIM) >= 3) hydraBloodSplash();
 							// Bookmark
@@ -5915,6 +5984,9 @@ use namespace CoC;
 				EngineCore.ManaChange(Math.round(maxMana() * percent));
 				EngineCore.changeFatigue(-Math.round(maxFatigue() * percent));
 			}
+			if (hasSlimeAbility("Fluid Euphoria")){
+				buff("SlimeAbility-Fluid Euphoria").addStat("spe.mult", 0.01, 0).withText("Fluid Euphoria");
+			}
 			if (perkv1(IMutationsLib.SlimeMetabolismIM) >= 3 && !hasStatusEffect(StatusEffects.PostfluidIntakeRegeneration)) createStatusEffect(StatusEffects.PostfluidIntakeRegeneration, 0, 0, 0, 0);
 			if (perkv1(IMutationsLib.SlimeMetabolismIM) >= 4 && (statStore.hasBuff("Weakened") || statStore.hasBuff("Drained") || statStore.hasBuff("Damaged"))) {
 				for each (var stat:String in ["str","spe","tou","int","wis","lib","sens"]) {
@@ -8176,6 +8248,7 @@ use namespace CoC;
 			outputText("\n\n");
 		}
 
+		public var slime_feed_height:int = 0;
 		public function slimeGrowth():void {
 			if (hasStatusEffect(StatusEffects.SlimeCraving)) {
 				if (perkv1(IMutationsLib.SlimeMetabolismIM) >= 3) {
@@ -8188,6 +8261,11 @@ use namespace CoC;
 					if (hasPerk(PerkLib.DarkSlimeCore)){
 						buff("Fluid Growth").addStats({"int.mult": 0.01}).withText("Fluid Growth!");
 					}
+				}
+				slime_feed_height += 1;
+				if (slime_feed_height >=2) {
+							tallness += Math.floor(slime_feed_height / 2);
+							slime_feed_height-= Math.floor(slime_feed_height / 2) * 2;
 				}
 			}
 			EngineCore.HPChange(Math.round(maxHP() * .2), true, false);
@@ -8977,4 +9055,5 @@ use namespace CoC;
 		}
 		
 	}
+
 }
